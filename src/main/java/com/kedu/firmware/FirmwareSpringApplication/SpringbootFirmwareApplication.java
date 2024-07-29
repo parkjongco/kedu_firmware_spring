@@ -1,13 +1,13 @@
-package com.kedu.firmware;
+package com.kedu.firmware.FirmwareSpringApplication;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FirmwareSpringApplication {
+public class SpringbootFirmwareApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FirmwareSpringApplication.class, args);
+		SpringApplication.run(SpringbootFirmwareApplication.class, args);
 	}
 
 }
