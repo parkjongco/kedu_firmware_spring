@@ -1,0 +1,19 @@
+package com.kedu.firmware.controllers;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/approval")
+public class ApprovalController {
+
+	@PostMapping("/{items}")
+	public ResponseEntity<Void> signup(@PathVariable String items) {
+		System.out.println(items);
+		return ResponseEntity.ok().build();
+	}
+}
+
