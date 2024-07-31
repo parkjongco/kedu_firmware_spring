@@ -1,10 +1,8 @@
 package com.kedu.firmware.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.web.bind.annotation.RestController;
 
-@Getter
-@Setter
+@RestController
 public class MailCarbonCopyDTO {
 	private int mail_carbon_copy_seq;
 	private int mail_carbon_receiver_seq;

@@ -1,12 +1,10 @@
 package com.kedu.firmware.DTO;
 
+import org.springframework.web.bind.annotation.RestController;
+
 import java.sql.Timestamp;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+@RestController
 public class UserUpdateRequestesDTO {
 	private int user_update_request_seq;
 	private int user_seq;

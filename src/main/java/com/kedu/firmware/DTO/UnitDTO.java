@@ -1,10 +1,8 @@
 package com.kedu.firmware.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.web.bind.annotation.RestController;
 
-@Getter
-@Setter
+@RestController
 public class UnitDTO {
 	private int unit_seq;
 	private int unit_captain_user_seq;

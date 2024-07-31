@@ -1,12 +1,10 @@
 package com.kedu.firmware.DTO;
 
+import org.springframework.web.bind.annotation.RestController;
+
 import java.sql.Timestamp;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+@RestController
 public class EmployeeDTO {
 	private int employee_seq;
 	private int profile_seq;

@@ -2,11 +2,9 @@ package com.kedu.firmware.DTO;
 
 import java.sql.Timestamp;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.web.bind.annotation.RestController;
 
-@Getter
-@Setter
+@RestController
 public class VacationApplicationDTO {
 	private int vacation_application_seq;
 	private int vacation_drafter_user_seq;
