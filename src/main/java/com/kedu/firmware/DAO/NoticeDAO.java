@@ -20,4 +20,8 @@ public class NoticeDAO {
        return  mybatis.selectList("notice.selectAll");
     }
 
+    public NoticeDTO selectBySeq(int seq) {
+        return mybatis.selectOne("notice.selectOne", seq);
+    }
+
 }

@@ -11,4 +11,9 @@
     <select id="selectAll" resultType="com.kedu.firmware.DTO.NoticeDTO">
         SELECT * FROM notice
     </select>
+
+    <select id="selectBySeq" parameterType="int" resultType="com.kedu.firmware.DTO.NoticeDTO">
+        SELECT * FROM notice WHERE notice_seq = #{notice_seq}
+    </select>
+
 </mapper>

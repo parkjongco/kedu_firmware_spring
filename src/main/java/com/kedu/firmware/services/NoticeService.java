@@ -22,6 +22,10 @@ public class NoticeService {
     public List<NoticeDTO> getNotices() {
         return noticeDAO.selectAll();
     }
+
+    public NoticeDTO getNotice(int seq) {
+        return noticeDAO.selectBySeq();
+    }
 }
 
 
