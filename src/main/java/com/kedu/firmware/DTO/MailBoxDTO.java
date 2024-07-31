@@ -1,10 +1,7 @@
 package com.kedu.firmware.DTO;
+import org.springframework.web.bind.annotation.RestController;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+@RestController
 public class MailBoxDTO {
 	private int mailbox_seq;
 	private int user_seq;
