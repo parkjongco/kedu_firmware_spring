@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Users">
+
+    <insert id="insertUser" parameterType="com.kedu.dto.UsersDTO" useGeneratedKeys="true" keyProperty="users_seq">
+        INSERT INTO users (users_seq, users_name, users_password, users_email, users_full_name, users_created_at, users_updated_at, users_is_admin)
+        VALUES (users_seq.NEXTVAL, #{users_name}, #{users_password}, #{users_email}, #{users_full_name}, SYSTIMESTAMP, SYSTIMESTAMP, 
+        <if test="users_is_admin != null">
+            #{users_is_admin}
+        </if>
+        <if test="users_is_admin == null">
+            0
+        </if>)
+    </insert>
+
+    <select id="findUserByUsername" parameterType="String" resultType="com.kedu.dto.UsersDTO">
+        SELECT * FROM users WHERE users_name = #{users_name}
+    </select>
+    
+    <update id="updateUser" parameterType="com.kedu.dto.UsersDTO">
+        UPDATE users SET
+            users_name = #{users_name},
+            users_password = #{users_password},
+            users_email = #{users_email},
+            users_full_name = #{users_full_name},
+            users_created_at = #{users_created_at},
+            users_updated_at = SYSTIMESTAMP,
+            users_is_admin = 
+            <if test="users_is_admin != null">
+                #{users_is_admin}
+            </if>
+            <if test="users_is_admin == null">
+                0
+            </if>
+        WHERE users_seq = #{users_seq}
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM users WHERE users_seq = #{users_seq}
+    </delete>
+
+    <select id="selectById" parameterType="String" resultType="com.kedu.dto.UsersDTO">
+        SELECT * FROM users WHERE users_name = #{id}
+    </select>
+</mapper>
