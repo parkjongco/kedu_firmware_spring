@@ -24,8 +24,19 @@ public class MailService {
 		return maildao.selectAllMails();
 	}
 	
-	public List<MailDTO> selectByMailTitle(String title){
-		return maildao.selectByMailTitle(title);
+	public List<MailDTO> selectByMailSeq(int seq){
+		return maildao.selectByMailSeq(seq);
 	}
+	
+	public int deleteById(int id) {
+		return maildao.deleteById(id);
+	}
+	
+	
+//	//유저 정보 받아오기
+//	public UsersDTO getUserInfo(int sender_user_seq) {
+//		return userdao.getUserInfo();
+//	}
+	
 	
 }

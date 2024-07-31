@@ -7,4 +7,20 @@
 	<insert id="insertMail">
   		insert into mail values(mail_seq.nextval, 1, 1, #{mail_title}, #{mail_contents}, sysdate, sysdate, null, 'N', 'N', 'Y')
   	</insert>
+  	
+  	<select id="selectAll" resultType="com.kedu.firmware.DTO.MailDTO">
+  		select * from mail order by mail_seq desc
+  	</select>
+  	
+  	<select id="selectBySeq" resultType="com.kedu.firmware.DTO.MailDTO">
+  		select * from mail where mail_seq = #{mail_seq}
+  	</select>
+  	
+  	<delete id="deleteSelectedMail">
+  		delete from mail where mail_seq = #{mail_seq}
+  	</delete>
+  	
+  	<select id="selectSenderInfo">
+  		select * from users where user_seq = #{sender_user_seq}
+  	</select>
 </mapper>

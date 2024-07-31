@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +49,8 @@ public class MailController {
 				System.out.println("To: " + to);
 	            System.out.println("Subject: " + subject);
 	            System.out.println("Message: " + message);
+	            
+	            
 	            mailServ.insertMail(new MailDTO(3,3,3,subject,message,null,null,null,'N','N','Y'));
 	            
 
@@ -59,21 +63,41 @@ public class MailController {
 			
 		}
 			
-//		//메일 출력
-//		@GetMapping
-//		public ResponseEntity<List<MailDTO>> get(String title){ //모호성 문제(ambious)로 매핑을 나누지않고 같은 매핑안에서 사용해야한다. 
-//			System.out.println(title);
-//			
-//			//분기점을 내부에서 만든다.
-//			//메일 제목 반환
-////			if(title != null) {
-////				return ResponseEntity.ok(mailServ.selectByMailTitle(title));
-////			} 
+		//메일 출력
+		@GetMapping
+		public ResponseEntity<List<MailDTO>> get(Integer seq){ //모호성 문제(ambious)로 매핑을 나누지않고 같은 매핑안에서 사용해야한다. 
+			
+			//분기점을 내부에서 만든다.
+			//메일 SEQ 반환
+			if(seq != null) {
+				System.out.println("제목 반환");
+				return ResponseEntity.ok(mailServ.selectByMailSeq(seq));
+				// 메일 제목으로 찾는 것이 아니라 메일seq로 찾는 것으로 수정이 필요해보인다.
+				// 메일 테이블에 수신종류 칼럼을 추가해서 회신이나 전달 메일이라는 정보가 있을때로 if문을 제어해야할 것이다. 
+			} 
+			
+			//메일 리스트반환
+			List<MailDTO> list = mailServ.getAllMails();
+
+			return ResponseEntity.ok(list);
+		}
+		
+		//선택된 메일 삭제
+		@DeleteMapping("/{id}")
+		public ResponseEntity<Void> delete(@PathVariable int id){
+			int result = mailServ.deleteById(id);
+			return ResponseEntity.ok().build();
+		}
+		
+//		//보내는 이의 seq 값으로 보내는이의 정보 받아오기 (이름과 이메일 등)
+//		@GetMapping("/{sender_user_seq}")
+//		public ResponseEntity<UsersDTO> get(int sender_user_seq){  
 //			
 //			//메일 리스트반환
-//			List<MailDTO> list = mailServ.getAllMails();
-//			return ResponseEntity.ok(list);
-//		}
-		
+//			UsersDTO senderInfo = usersServ.getSenderInfo(sender_user_seq);
+//
+//			return ResponseEntity.ok(senderInfo);
+//		}		
+
 		
 }

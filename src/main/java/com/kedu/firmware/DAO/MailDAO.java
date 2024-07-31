@@ -20,11 +20,19 @@ public class MailDAO {
 	}
 	//
 	public List<MailDTO> selectAllMails(){
-		return mybatis.selectList("Mail.selectALL");
+		return mybatis.selectList("Mail.selectAll");
 	}
 	
-	public List<MailDTO> selectByMailTitle(String title){ 
-		return mybatis.selectList("Mail.selectByTitle", title);
+	public List<MailDTO> selectByMailSeq(int seq){ 
+		return mybatis.selectList("Mail.selectBySeq", seq);
 	}
+	
+	public int deleteById(int id) {
+		return mybatis.delete("Mail.deleteSelectedMail", id);
+	}
+	
+//	public UsersDTO getSenderInfo(int sender_user_seq) {
+//		return mybatis.selectOne("User.selectSenderInfo", sender_user_seq);
+//	}
 	
 }
