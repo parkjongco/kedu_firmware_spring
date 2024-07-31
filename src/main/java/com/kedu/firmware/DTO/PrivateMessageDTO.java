@@ -6,48 +6,53 @@ import java.sql.Timestamp;
 
 @RestController
 public class PrivateMessageDTO {
-	private int private_message_seq;
-	private int user_seq;
-	private int private_message_sender;
-	private int private_message_receiver_id;
-	private String private_message_contents;
-	private Timestamp private_message_send_date;
-	public int getPrivate_message_seq() {
-		return private_message_seq;
+	 private String senderUsername; // 보낸 사람의 사용자 이름
+	    private String receiverUsername; // 받는 사람의 사용자 이름
+	    private String content; // 메시지 내용
+	    private Timestamp sendDate; // 보낸 날짜
+
+	    // Getters and setters
+	    public String getSenderUsername() {
+	        return senderUsername;
+	    }
+
+	    public void setSenderUsername(String senderUsername) {
+	        this.senderUsername = senderUsername;
+	    }
+
+	    public String getReceiverUsername() {
+	        return receiverUsername;
+	    }
+
+	    public void setReceiverUsername(String receiverUsername) {
+	        this.receiverUsername = receiverUsername;
+	    }
+
+	    public String getContent() {
+	        return content;
+	    }
+
+	    public void setContent(String content) {
+	        this.content = content;
+	    }
+
+	    public Timestamp getSendDate() {
+	        return sendDate;
+	    }
+
+	    public void setSendDate(Timestamp sendDate) {
+	        this.sendDate = sendDate;
+	    }
+
+	    // Constructors
+	    public PrivateMessageDTO(String senderUsername, String receiverUsername, String content, Timestamp sendDate) {
+	        this.senderUsername = senderUsername;
+	        this.receiverUsername = receiverUsername;
+	        this.content = content;
+	        this.sendDate = sendDate;
+	    }
+
+	    public PrivateMessageDTO() {
+	    }
 	}
-	public void setPrivate_message_seq(int private_message_seq) {
-		this.private_message_seq = private_message_seq;
-	}
-	public int getUser_seq() {
-		return user_seq;
-	}
-	public void setUser_seq(int user_seq) {
-		this.user_seq = user_seq;
-	}
-	public int getPrivate_message_sender() {
-		return private_message_sender;
-	}
-	public void setPrivate_message_sender(int private_message_sender) {
-		this.private_message_sender = private_message_sender;
-	}
-	public int getPrivate_message_receiver_id() {
-		return private_message_receiver_id;
-	}
-	public void setPrivate_message_receiver_id(int private_message_receiver_id) {
-		this.private_message_receiver_id = private_message_receiver_id;
-	}
-	public String getPrivate_message_contents() {
-		return private_message_contents;
-	}
-	public void setPrivate_message_contents(String private_message_contents) {
-		this.private_message_contents = private_message_contents;
-	}
-	public Timestamp getPrivate_message_send_date() {
-		return private_message_send_date;
-	}
-	public void setPrivate_message_send_date(Timestamp private_message_send_date) {
-		this.private_message_send_date = private_message_send_date;
-	}
-	
-	
-}
+

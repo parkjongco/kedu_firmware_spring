@@ -1,6 +1,7 @@
 package com.kedu.firmware.controllers;
 
 import com.kedu.firmware.DTO.NoticeDTO;
+
 import com.kedu.firmware.services.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +31,8 @@ public class NoticeController {
     }
 
     @GetMapping
-    public ResponseEntity<NoticeDTO> getById(@RequestParam Long seq) {
-        NoticeDTO notice =noticeService.getNoticeBySeq(seq);
+    public ResponseEntity<NoticeDTO> getById(@RequestParam int seq) {
+        NoticeDTO notice =noticeService.getNotice(seq);
         if(notice != null) {
             return ResponseEntity.ok(notice);
         }
