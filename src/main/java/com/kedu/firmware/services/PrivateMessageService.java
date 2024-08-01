@@ -13,14 +13,27 @@ public class PrivateMessageService {
     @Autowired
     private PrivateMessageDAO privateMessageDAO;
 
+    /**
+     * 메시지를 저장합니다.
+     * @param message 저장할 메시지
+     */
     public void saveMessage(PrivateMessageDTO message) {
         privateMessageDAO.saveMessage(message);
     }
 
+    /**
+     * 모든 메시지를 조회합니다.
+     * @return 모든 PrivateMessageDTO 객체의 리스트
+     */
     public List<PrivateMessageDTO> getAllMessages() {
         return privateMessageDAO.selectAll();
     }
 
+    /**
+     * 특정 ID에 해당하는 메시지를 조회합니다.
+     * @param id 조회할 메시지의 ID
+     * @return 조회된 PrivateMessageDTO 객체
+     */
     public PrivateMessageDTO getMessageById(int id) {
         return privateMessageDAO.selectById(id);
     }

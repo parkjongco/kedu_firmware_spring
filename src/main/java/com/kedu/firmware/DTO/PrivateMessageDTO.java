@@ -3,38 +3,49 @@ package com.kedu.firmware.DTO;
 import java.sql.Timestamp;
 
 public class PrivateMessageDTO {
-    private String senderUsername;  // CamelCase
-    private String receiverUsername; // CamelCase
-    private String content;
-    private Timestamp sendDate;
+    private int message_seq;  // 메시지의 고유 식별자
+    private String sender_username;  // 보낸 사람의 사용자 이름
+    private String receiver_username;  // 받는 사람의 사용자 이름
+    private String content;  // 메시지 내용
+    private Timestamp send_date;  // 보낸 날짜
 
     // 기본 생성자
     public PrivateMessageDTO() {
     }
 
     // 매개변수 생성자
-    public PrivateMessageDTO(String senderUsername, String receiverUsername, String content, Timestamp sendDate) {
-        this.senderUsername = senderUsername;
-        this.receiverUsername = receiverUsername;
+    public PrivateMessageDTO(int message_seq, String sender_username, String receiver_username, String content, Timestamp send_date) {
+        this.message_seq = message_seq;
+        this.sender_username = sender_username;
+        this.receiver_username = receiver_username;
         this.content = content;
-        this.sendDate = sendDate;
+        this.send_date = send_date;
     }
 
     // Getter 및 Setter 메서드
-    public String getSenderUsername() {
-        return senderUsername;
+
+    public int getMessage_seq() {
+        return message_seq;
     }
 
-    public void setSenderUsername(String senderUsername) {
-        this.senderUsername = senderUsername;
+    public void setMessage_seq(int message_seq) {
+        this.message_seq = message_seq;
     }
 
-    public String getReceiverUsername() {
-        return receiverUsername;
+    public String getSender_username() {
+        return sender_username;
     }
 
-    public void setReceiverUsername(String receiverUsername) {
-        this.receiverUsername = receiverUsername;
+    public void setSender_username(String sender_username) {
+        this.sender_username = sender_username;
+    }
+
+    public String getReceiver_username() {
+        return receiver_username;
+    }
+
+    public void setReceiver_username(String receiver_username) {
+        this.receiver_username = receiver_username;
     }
 
     public String getContent() {
@@ -45,11 +56,11 @@ public class PrivateMessageDTO {
         this.content = content;
     }
 
-    public Timestamp getSendDate() {
-        return sendDate;
+    public Timestamp getSend_date() {
+        return send_date;
     }
 
-    public void setSendDate(Timestamp sendDate) {
-        this.sendDate = sendDate;
+    public void setSend_date(Timestamp send_date) {
+        this.send_date = send_date;
     }
 }
