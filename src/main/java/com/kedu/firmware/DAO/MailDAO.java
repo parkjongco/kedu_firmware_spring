@@ -18,7 +18,16 @@ public class MailDAO {
 	public void insertMail(MailDTO dto) {
 		mybatis.insert("Mail.insertMail", dto);
 	}
-	//
+	
+	public void replyMail(MailDTO dto) {
+		mybatis.insert("Mail.replyMail", dto);
+	}
+	
+	// 원본 메일 가져오기 (회신 메일의 MAILBOX_SEQ 가져오기 위함)
+    public MailDTO getMailById(int mailId) {
+        return mybatis.selectOne("Mail.getMailById", mailId);
+    }
+	
 	public List<MailDTO> selectAllMails(){
 		return mybatis.selectList("Mail.selectAll");
 	}

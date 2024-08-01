@@ -25,12 +25,19 @@ public class MailController {
 	
 	//-----------------------------
 		//메일 작성
+		//메일 작성에 대해
+		//메일 작성을 하면 메일함이 생성된다
+		//해당 메일함의 seq를 가진 메일이 작성된다.
+		//회신할때는 메일함이 생성되는 것이 아닌, 해당 메일함의 seq를 가진 새로운 메일이 추가된다.
+		//즉, createMail은 새로운 메일함과 메일을 동시에 생성하는 것
+	
 		@PostMapping
 		public ResponseEntity<String> createMail(
 				@RequestParam("to") String to,
 	            @RequestParam("subject") String subject,
 	            @RequestParam("message") String message,
-	            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+	            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments,
+	            @RequestParam(value = "replyToMailId", required = false) Integer replyToMailId) {
 			System.out.println("첨부파일 있는지 확인 중");
 			try {
 	            // 첨부 파일 처리
@@ -50,10 +57,22 @@ public class MailController {
 	            System.out.println("Subject: " + subject);
 	            System.out.println("Message: " + message);
 	            
+	            //!!!!받는 사람도 구현해야함!!!!!!
 	            
-	            mailServ.insertMail(new MailDTO(3,3,3,subject,message,null,null,null,'N','N','Y'));
 	            
-
+	            int loginID = 1;
+	            
+	            if (replyToMailId != null) {
+	            	//회신 메일 처리
+	            	System.out.println("회신하고자하는 메일의 ID " + replyToMailId);
+	            	// 원본 메일의 MAILBOX_SEQ 가져오기위해 서비스로 replyToMailID넘겨준다.
+	                
+	            	mailServ.replyMail(new MailDTO(0, loginID, replyToMailId, subject, message, null, null, null, 'N', 'N', 'Y'));
+	            }else {
+	            	//새로운 메일 작성 처리
+	            	mailServ.insertMail(new MailDTO(0,loginID,0,subject,message,null,null,null,'N','N','Y'));
+	            }
+	            
 	            return ResponseEntity.ok("메일이 성공적으로 전송되었습니다.");
 	        } catch (Exception e) {
 	            e.printStackTrace();
@@ -68,15 +87,16 @@ public class MailController {
 		public ResponseEntity<List<MailDTO>> get(Integer seq){ //모호성 문제(ambious)로 매핑을 나누지않고 같은 매핑안에서 사용해야한다. 
 			
 			//분기점을 내부에서 만든다.
-			//메일 SEQ 반환
+			//사용자가 메일함 목록 선택했을때, 해당 메일함의 메일들이 출력
 			if(seq != null) {
-				System.out.println("제목 반환");
+				System.out.println("seq 반환");
 				return ResponseEntity.ok(mailServ.selectByMailSeq(seq));
 				// 메일 제목으로 찾는 것이 아니라 메일seq로 찾는 것으로 수정이 필요해보인다.
 				// 메일 테이블에 수신종류 칼럼을 추가해서 회신이나 전달 메일이라는 정보가 있을때로 if문을 제어해야할 것이다. 
 			} 
 			
 			//메일 리스트반환
+			//메일함 목록을 보여주어야하기때문에 각 메일함에서 첫번째로 작성된 메일들만 출력해야한다.
 			List<MailDTO> list = mailServ.getAllMails();
 
 			return ResponseEntity.ok(list);
