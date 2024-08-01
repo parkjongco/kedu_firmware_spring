@@ -22,8 +22,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .setAllowedOrigins("http://192.168.1.11:3000")
             .withSockJS();
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/master
