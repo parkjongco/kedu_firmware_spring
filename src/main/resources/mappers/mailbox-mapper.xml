@@ -9,4 +9,12 @@
         INSERT INTO mailbox (MAILBOX_SEQ, USER_SEQ)
         VALUES (MAILBOX_SEQ.NEXTVAL, #{user_seq})
     </insert>
+    
+    <delete id="deleteSelectedMailBox">
+  		delete from mail where mailbox_seq = (
+  			select mailbox_seq from mail where mail_seq = #{mail_seq}
+  		)
+  	</delete>
+  	
+  	
 </mapper>

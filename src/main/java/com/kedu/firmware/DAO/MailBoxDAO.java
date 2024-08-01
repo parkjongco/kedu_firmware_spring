@@ -17,5 +17,8 @@ public class MailBoxDAO {
 		mybatis.insert("MailBox.insertMailBox", dto);
 	}
 	
+	public int deleteById(int id) {
+		return mybatis.delete("MailBox.deleteSelectedMailBox", id);
+	}
 	
 }
