@@ -22,4 +22,13 @@ public class BoardDAO {
         public BoardDTO selectBySeq(int seq) {
             return mybatis.selectOne("board.selectBySeq", seq);
         }
+
+        public int deleteBySeq(int seq) {
+            return mybatis.delete("board.deleteBySeq", seq);
+        }
+
+    public int updateBySeq(BoardDTO dto) {
+        return mybatis.update("board.updateBySeq", dto);
+    }
+
 }

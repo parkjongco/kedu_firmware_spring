@@ -17,4 +17,20 @@
         SELECT * FROM board WHERE board_seq = #{board_seq}
     </select>
 
+    <delete id="deleteBySeq">
+        DELETE FROM board WHERE board_seq = #{board_seq}
+    </delete>
+
+    <update id="updateBySeq" >
+        UPDATE
+        SET
+        board_title = #{board_title},
+        board_contents = #{board_contents},
+        board_write_date = (sysdate)
+        WHERE board_seq = #{board_seq}
+    </update>
+
+
+
+
 </mapper>

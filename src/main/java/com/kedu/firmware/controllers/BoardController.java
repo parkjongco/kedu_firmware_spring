@@ -38,4 +38,19 @@ public class BoardController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/{seq}")
+    public ResponseEntity<Void> deleteBySeq(@PathVariable int seq) {
+        boardService.deleteBySeq(seq);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{seq}")
+    public ResponseEntity<Void> updateBySeq(@RequestBody BoardDTO dto, @PathVariable int seq) {
+        // seq 값을 dto에 설정 (DTO에 seq 필드가 있어야 합니다)
+        dto.setBoard_seq(seq);
+        boardService.updateBySeq(dto);
+        return ResponseEntity.ok().build();
+    }
+
 }

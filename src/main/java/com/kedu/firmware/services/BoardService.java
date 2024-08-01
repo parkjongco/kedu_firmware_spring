@@ -26,4 +26,13 @@ public class BoardService {
     public BoardDTO getBoard(int seq) {
         return boardDAO.selectBySeq(seq);
     }
+
+    public int deleteBySeq(int seq) {
+        return boardDAO.deleteBySeq(seq);
+    }
+
+    public int updateBySeq(BoardDTO dto) {
+        return boardDAO.updateBySeq(dto);
+    }
+
 }
