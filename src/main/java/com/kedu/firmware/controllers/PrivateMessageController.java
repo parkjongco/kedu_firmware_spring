@@ -30,27 +30,9 @@ public class PrivateMessageController {
             messagingTemplate.convertAndSend("/topic/public", message);
             return ResponseEntity.ok("Message saved and broadcasted successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving message");
-        }
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<PrivateMessageDTO>> getAllMessages() {
-        try {
-            List<PrivateMessageDTO> messages = privateMessageService.getAllMessages();
-            return ResponseEntity.ok(messages);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<PrivateMessageDTO> getMessageById(@PathVariable int id) {
-        try {
-            PrivateMessageDTO message = privateMessageService.getMessageById(id);
-            return ResponseEntity.ok(message);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            // Log the exception for more insights
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving message: " + e.getMessage());
         }
     }
 

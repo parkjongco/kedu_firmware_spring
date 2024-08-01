@@ -3,8 +3,8 @@ package com.kedu.firmware.DTO;
 import java.sql.Timestamp;
 
 public class PrivateMessageDTO {
-    private String senderusername;
-    private String receiverusername;
+    private String senderUsername;  // CamelCase
+    private String receiverUsername; // CamelCase
     private String content;
     private Timestamp sendDate;
 
@@ -13,28 +13,28 @@ public class PrivateMessageDTO {
     }
 
     // 매개변수 생성자
-    public PrivateMessageDTO(String senderusername, String receiverusername, String content, Timestamp sendDate) {
-        this.senderusername = senderusername;
-        this.receiverusername = receiverusername;
+    public PrivateMessageDTO(String senderUsername, String receiverUsername, String content, Timestamp sendDate) {
+        this.senderUsername = senderUsername;
+        this.receiverUsername = receiverUsername;
         this.content = content;
         this.sendDate = sendDate;
     }
 
     // Getter 및 Setter 메서드
-    public String getSenderusername() {
-        return senderusername;
+    public String getSenderUsername() {
+        return senderUsername;
     }
 
-    public void setSenderusername(String senderusername) {
-        this.senderusername = senderusername;
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername = senderUsername;
     }
 
-    public String getReceiverusername() {
-        return receiverusername;
+    public String getReceiverUsername() {
+        return receiverUsername;
     }
 
-    public void setReceiverusername(String receiverusername) {
-        this.receiverusername = receiverusername;
+    public void setReceiverUsername(String receiverUsername) {
+        this.receiverUsername = receiverUsername;
     }
 
     public String getContent() {
