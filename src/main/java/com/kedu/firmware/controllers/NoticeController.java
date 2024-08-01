@@ -29,16 +29,6 @@ public class NoticeController {
         return ResponseEntity.ok(notices);
     }
 
-    @GetMapping
-    public ResponseEntity<NoticeDTO> getById(@RequestParam Long seq) {
-        NoticeDTO notice =noticeService.getNoticeBySeq(seq);
-        if(notice != null) {
-            return ResponseEntity.ok(notice);
-        }
-        else{
-            return ResponseEntity.notFound().build();
-        }
-    }
-
+   
 
 }
