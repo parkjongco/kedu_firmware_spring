@@ -22,7 +22,7 @@
     </delete>
 
     <update id="updateBySeq" >
-        UPDATE
+        UPDATE board
         SET
         board_title = #{board_title},
         board_contents = #{board_contents},
