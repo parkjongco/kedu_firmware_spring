@@ -10,10 +10,9 @@
         VALUES (MAILBOX_SEQ.NEXTVAL, #{user_seq})
     </insert>
     
+    <!-- 메일함 삭제 -->
     <delete id="deleteSelectedMailBox">
-  		delete from mail where mailbox_seq = (
-  			select mailbox_seq from mail where mail_seq = #{mail_seq}
-  		)
+  		delete from mail where mailbox_seq = #{mailbox_seq}
   	</delete>
   	
   	

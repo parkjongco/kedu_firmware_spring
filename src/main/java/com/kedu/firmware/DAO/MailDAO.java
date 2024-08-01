@@ -40,6 +40,9 @@ public class MailDAO {
 		return mybatis.delete("Mail.deleteSelectedMail", id);
 	}
 	
+	public int deleteMailsById(int id) {
+		return mybatis.delete("Mail.deleteSelectedMails", id);
+	}
 //	public UsersDTO getSenderInfo(int sender_user_seq) {
 //		return mybatis.selectOne("User.selectSenderInfo", sender_user_seq);
 //	}

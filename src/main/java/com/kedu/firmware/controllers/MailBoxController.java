@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kedu.firmware.services.MailBoxService;
-import com.kedu.firmware.services.MailService;
 
 @RestController
 @RequestMapping("/mailbox")

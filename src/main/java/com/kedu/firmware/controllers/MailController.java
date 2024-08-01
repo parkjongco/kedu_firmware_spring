@@ -98,7 +98,6 @@ public class MailController {
 			//메일 리스트반환
 			//메일함 목록을 보여주어야하기때문에 각 메일함에서 첫번째로 작성된 메일들만 출력해야한다.
 			List<MailDTO> list = mailServ.getAllMails();
-
 			return ResponseEntity.ok(list);
 		}
 		

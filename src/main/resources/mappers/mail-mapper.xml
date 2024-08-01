@@ -27,11 +27,20 @@
   	</select>
   	
   	<select id="selectBySeq" resultType="com.kedu.firmware.DTO.MailDTO">
-  		select * from mail where mailbox_seq = #{mailbox_seq} order by 1 desc
+  		select * from mail where mailbox_seq = (
+  			select mailbox_seq from mail where mail_seq = #{mail_seq}
+  		) order by 1 desc
   	</select>
   	
   	<delete id="deleteSelectedMail">
   		delete from mail where mail_seq = #{mail_seq}
+  	</delete>
+  	
+  	<!-- 선택된 메일 전체 삭제 -->
+  	<delete id="deleteSelectedMails">
+  		delete from mail where mailbox_seq = (	
+			select mailbox_seq from mail where mail_seq = #{mail_seq}
+		)
   	</delete>
   	
   	<select id="selectSenderInfo">
