@@ -24,7 +24,7 @@ public class NoticeService {
     }
 
     public NoticeDTO getNotice(int seq) {
-        return noticeDAO.selectBySeq();
+        return noticeDAO.selectBySeq(seq);
     }
 }
 
