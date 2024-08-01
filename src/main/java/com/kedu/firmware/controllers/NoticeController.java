@@ -29,7 +29,10 @@ public class NoticeController {
         return ResponseEntity.ok(notices);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 42fa93ad200b550a06ac2eecae642f09d7c826e5
     @GetMapping("/detail/{seq}")
     public ResponseEntity<NoticeDTO> getBySeq(@PathVariable  int seq) {
         NoticeDTO notice = noticeService.getNotice(seq);
@@ -39,6 +42,5 @@ public class NoticeController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 }
