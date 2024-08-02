@@ -3,22 +3,52 @@ package com.kedu.firmware.DTO;
 import java.sql.Timestamp;
 
 public class UsersDTO {
-    private int users_seq;
+    private Integer users_seq;
+    private String users_code;
     private String users_name;
     private String users_password;
     private String users_email;
     private String users_full_name;
+    private String department_code;  // 추가된 필드: 부서 코드
+    private String unit_code;  // 추가된 필드: 유닛 코드
     private Timestamp users_created_at;
     private Timestamp users_updated_at;
     private Integer users_is_admin;
 
+    public UsersDTO() {}
+
+    public UsersDTO(Integer users_seq, String users_code, String users_name, String users_password, String users_email, 
+                    String users_full_name, String department_code, String unit_code, 
+                    Timestamp users_created_at, Timestamp users_updated_at, Integer users_is_admin) {
+        this.users_seq = users_seq;
+        this.users_code = users_code;
+        this.users_name = users_name;
+        this.users_password = users_password;
+        this.users_email = users_email;
+        this.users_full_name = users_full_name;
+        this.department_code = department_code;
+        this.unit_code = unit_code;
+        this.users_created_at = users_created_at;
+        this.users_updated_at = users_updated_at;
+        this.users_is_admin = users_is_admin;
+    }
+
     // Getters and Setters
-    public int getUsers_seq() {
+
+    public Integer getUsers_seq() {
         return users_seq;
     }
 
-    public void setUsers_seq(int users_seq) {
+    public void setUsers_seq(Integer users_seq) {
         this.users_seq = users_seq;
+    }
+
+    public String getUsers_code() {
+        return users_code;
+    }
+
+    public void setUsers_code(String users_code) {
+        this.users_code = users_code;
     }
 
     public String getUsers_name() {
@@ -51,6 +81,22 @@ public class UsersDTO {
 
     public void setUsers_full_name(String users_full_name) {
         this.users_full_name = users_full_name;
+    }
+
+    public String getDepartment_code() {
+        return department_code;
+    }
+
+    public void setDepartment_code(String department_code) {
+        this.department_code = department_code;
+    }
+
+    public String getUnit_code() {
+        return unit_code;
+    }
+
+    public void setUnit_code(String unit_code) {
+        this.unit_code = unit_code;
     }
 
     public Timestamp getUsers_created_at() {
