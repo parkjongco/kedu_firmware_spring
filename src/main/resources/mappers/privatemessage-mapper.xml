@@ -10,7 +10,7 @@
             message_seq, sender_username, receiver_username, content, send_date
         )
         VALUES (
-            private_messages_seq.NEXTVAL, 
+            message_seq.NEXTVAL,  <!-- 시퀀스를 사용하여 message_seq 값을 자동으로 증가 -->
             #{sender_username, jdbcType=VARCHAR}, 
             #{receiver_username, jdbcType=VARCHAR}, 
             #{content, jdbcType=VARCHAR}, 
@@ -18,16 +18,22 @@
         )
     </insert>
 
-    <!-- 모든 메시지를 데이터베이스에서 조회합니다 -->
     <select id="selectAll" resultType="com.kedu.firmware.DTO.PrivateMessageDTO">
         SELECT message_seq, sender_username, receiver_username, content, send_date 
         FROM private_messages
     </select>
 
-    <!-- 특정 ID에 해당하는 메시지를 데이터베이스에서 조회합니다 -->
     <select id="selectById" parameterType="int" resultType="com.kedu.firmware.DTO.PrivateMessageDTO">
         SELECT message_seq, sender_username, receiver_username, content, send_date 
         FROM private_messages 
         WHERE message_seq = #{id, jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByParticipants" resultType="com.kedu.firmware.DTO.PrivateMessageDTO">
+        SELECT message_seq, sender_username, receiver_username, content, send_date 
+        FROM private_messages
+        WHERE (sender_username = #{sender} AND receiver_username = #{receiver})
+           OR (sender_username = #{receiver} AND receiver_username = #{sender})
+        ORDER BY send_date
     </select>
 </mapper>
