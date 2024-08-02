@@ -11,10 +11,13 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/messages")
 public class PrivateMessageController {
+
+    private static final Logger logger = Logger.getLogger(PrivateMessageController.class.getName());
 
     @Autowired
     private PrivateMessageService privateMessageService;
@@ -36,7 +39,7 @@ public class PrivateMessageController {
             return ResponseEntity.ok("메시지가 성공적으로 저장되고 브로드캐스트되었습니다.");
         } catch (Exception e) {
             // 예외 발생 시 예외를 로그로 기록
-            e.printStackTrace();
+            logger.severe("메시지 저장 오류: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("메시지 저장 오류: " + e.getMessage());
         }
     }

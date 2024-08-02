@@ -5,6 +5,7 @@ import com.kedu.firmware.DTO.PrivateMessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -18,6 +19,9 @@ public class PrivateMessageService {
      * @param message 저장할 메시지
      */
     public void saveMessage(PrivateMessageDTO message) {
+        if (message.getSend_date() == null) {
+            message.setSend_date(new Timestamp(System.currentTimeMillis())); // 현재 시간으로 전송 날짜 설정
+        }
         privateMessageDAO.saveMessage(message);
     }
 

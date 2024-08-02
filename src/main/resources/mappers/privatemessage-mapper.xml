@@ -10,7 +10,7 @@
             message_seq, sender_username, receiver_username, content, send_date
         )
         VALUES (
-            #{message_seq, jdbcType=INTEGER}, 
+            private_messages_seq.NEXTVAL, 
             #{sender_username, jdbcType=VARCHAR}, 
             #{receiver_username, jdbcType=VARCHAR}, 
             #{content, jdbcType=VARCHAR}, 
