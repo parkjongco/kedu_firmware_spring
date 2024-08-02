@@ -5,14 +5,20 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class Board_ReplyDAO {
 
     @Autowired
-   private SqlSession mybaits;
+    private SqlSession mybatis;
 
     public void insert(Board_ReplyDTO dto) {
-        mybaits.insert("reply.insert", dto);
+        mybatis.insert("reply.insert", dto);
+    }
+
+    public List<Board_ReplyDTO> selectAll(int boardSeq) {
+        return mybatis.selectList("reply.selectAll", boardSeq);
     }
 }
 

@@ -26,6 +26,7 @@ public class AuthController {
     // 회원일 경우 세션에 로그인 정보를 저장하고, 사용자 정보를 반환
     @PostMapping
     public ResponseEntity<UsersDTO> login(@RequestBody UsersDTO usersdto) {
+        System.out.println("usercode:::"+usersdto.getUsers_code());
         boolean result = usersService.isMember(usersdto);
         if (!result) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
