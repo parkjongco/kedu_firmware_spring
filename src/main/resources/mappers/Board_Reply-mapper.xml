@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="reply">
+    <insert id="insert">
+        INSERT INTO board_reply (reply_seq, reply_uid, reply_contents, reply_reg_date)
+        VALUES (#{reply_Seq}, #{reply_Uid}, #{reply_Contents}, (sysdate))
+    </insert>
+
+</mapper>

@@ -19,12 +19,17 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kedu.firmware.DTO.MailDTO;
 import com.kedu.firmware.services.MailService;
 
-@RestController
-@RequestMapping("/mail")
+import jakarta.servlet.http.HttpSession;
+
+
+
 public class MailController {
 
 	@Autowired
 	private MailService mailServ;
+	
+	@Autowired
+    private HttpSession session;
 	
 	//-----------------------------
 		//메일 작성
@@ -63,7 +68,7 @@ public class MailController {
 	            //!!!!받는 사람도 구현해야함!!!!!!
 	            
 	            
-	            int loginID = 1;
+	            int loginID = (int) session.getAttribute("loginID");
 	            
 	            if (replyToMailId != null) {
 	            	//회신 메일 처리

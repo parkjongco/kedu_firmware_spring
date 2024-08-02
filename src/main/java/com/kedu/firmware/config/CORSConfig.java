@@ -5,16 +5,22 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CORSConfig implements WebMvcConfigurer{
+public class CORSConfig implements WebMvcConfigurer {
 
-	@Override
-	public void addCorsMappings(CorsRegistry registry) {
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins(
+                "http://192.168.1.11:3000",
+                "http://192.168.1.10:3000",
+                "http://192.168.1.36:3000",
+                "http://192.168.1.172:3000",
+                "http://192.168.1.43:3000",
+                "http://localhost:3000"
+            )
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("*")
+            .allowCredentials(true); // allowCredentials(true)와 함께 '*'를 사용하면 오류가 발생할 수 있음
+    }
 
-		registry.addMapping("/**").
-		allowedOrigins("http://192.168.1.36:3000, http://localhost:3000 "). // 해당 부분은 파이어베이스 서버 이름으로 바뀔 예정
-		allowedMethods("*").
-		allowedHeaders("*").
-		allowCredentials(true); // <-- 서버와 URL이 다른 곳에서 Credential정보 ( Session Key ) 값을 전송해도 허용하는 설정
-
-	}
 }
