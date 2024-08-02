@@ -1,10 +1,9 @@
 package com.kedu.firmware.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
 public class AnnualVacationManageMentDTO {
 	private int annual_vacation_manage_seq;
 	private int user_seq;

@@ -1,7 +1,10 @@
 package com.kedu.firmware.DTO;
 
-import java.sql.Timestamp;
 
+import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.Timestamp;
+//@RestController
 
 public class MailDTO {
 	private int mail_seq;
@@ -15,10 +18,11 @@ public class MailDTO {
 	private char mail_read_status;
 	private char mail_deleted_status;
 	private char mail_sent_status;
-	public int getMail_seq() {
-		return mail_seq;
-	}
-	public void setMail_seq(int mail_seq) {
+
+	public MailDTO(int mail_seq, int mail_sender_user_seq, int mailbox_seq, String mail_title, String mail_contents,
+			Timestamp mail_sent_date, Timestamp mail_received_date, Timestamp mail_deleted_date, char mail_read_status,
+			char mail_deleted_status, char mail_sent_status) {
+		super();
 		this.mail_seq = mail_seq;
 	}
 	public int getMail_sender_user_seq() {

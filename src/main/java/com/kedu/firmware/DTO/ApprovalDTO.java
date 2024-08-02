@@ -1,11 +1,12 @@
 package com.kedu.firmware.DTO;
 
+import org.springframework.web.bind.annotation.RestController;
+
 import java.sql.Timestamp;
 import java.util.List;
 
+@RestController
 public class ApprovalDTO {
-
-
 	private int approval_seq;
 	private int approval_template_seq;
 	private int approval_drafter_seq;

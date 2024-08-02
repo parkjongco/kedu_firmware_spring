@@ -1,10 +1,8 @@
 package com.kedu.firmware.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.web.bind.annotation.RestController;
 
-@Getter
-@Setter
+@RestController
 public class ApprovalLineDetailDTO {
 	private int approval_line_detail_seq;
 	private int approval_line_seq;
