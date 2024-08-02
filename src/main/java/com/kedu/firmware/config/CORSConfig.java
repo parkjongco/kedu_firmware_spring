@@ -10,7 +10,7 @@ public class CORSConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://192.168.1.11:3000","http://192.168.1.10:3000","http://192.168.1.36:3000","http://192.168.1.43:3000","http://localhost:3000") // 클라이언트 주소를 추가합니다
+            .allowedOrigins("http://192.168.1.11:3000","http://192.168.1.10:3000","http://192.168.1.36:3000","http://192.168.1.172:3000","http://192.168.1.43:3000","http://localhost:3000") // 클라이언트 주소를 추가합니다
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             .allowCredentials(true);
