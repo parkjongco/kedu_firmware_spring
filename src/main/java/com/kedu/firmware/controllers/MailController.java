@@ -1,6 +1,9 @@
 package com.kedu.firmware.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -82,23 +85,46 @@ public class MailController {
 			
 		}
 			
-		//메일 출력
 		@GetMapping
-		public ResponseEntity<List<MailDTO>> get(Integer seq){ //모호성 문제(ambious)로 매핑을 나누지않고 같은 매핑안에서 사용해야한다. 
-			
-			//분기점을 내부에서 만든다.
-			//사용자가 메일함 목록 선택했을때, 해당 메일함의 메일들이 출력
-			if(seq != null) {
-				System.out.println("seq 반환");
-				return ResponseEntity.ok(mailServ.selectByMailSeq(seq));
-				// 메일 제목으로 찾는 것이 아니라 메일seq로 찾는 것으로 수정이 필요해보인다.
-				// 메일 테이블에 수신종류 칼럼을 추가해서 회신이나 전달 메일이라는 정보가 있을때로 if문을 제어해야할 것이다. 
-			} 
-			
-			//메일 리스트반환
-			//메일함 목록을 보여주어야하기때문에 각 메일함에서 첫번째로 작성된 메일들만 출력해야한다.
-			List<MailDTO> list = mailServ.getAllMails();
-			return ResponseEntity.ok(list);
+		public ResponseEntity<Map<String, Object>> get(
+		        @RequestParam(value = "seq", required = false) Integer seq,
+		        @RequestParam(value = "query", required = false) String query,
+		        @RequestParam(value = "page", defaultValue = "1") int page, // 추가된 부분: 페이지 번호
+		        @RequestParam(value = "size", defaultValue = "10") int size // 추가된 부분: 페이지 당 메일 수
+		) { // 모호성 문제(ambious)로 매핑을 나누지않고 같은 매핑안에서 사용해야한다. 
+
+		    // 분기점을 내부에서 만든다.
+		    // 사용자가 메일함 목록 선택했을때, 해당 메일함의 메일들이 출력
+		    if(seq != null) {
+		        System.out.println("seq 반환");
+		        return ResponseEntity.ok(Map.of("mails", mailServ.selectByMailSeq(seq), "total", 1));
+		    } 
+
+		    // 메일 리스트반환
+		    // 메일함 목록을 보여주어야하기때문에 각 메일함에서 첫번째로 작성된 메일들만 출력해야한다.
+		    List<MailDTO> list = mailServ.getAllMails();
+
+		    // 검색어가 있는 경우 필터링
+		    if (query != null && !query.isEmpty()) {
+		        list = list.stream()
+		            .filter(mail -> mail.getMail_title().contains(query) || mail.getMail_content().contains(query))
+		            .collect(Collectors.toList());
+		    }
+
+		    // 전체 메일 수 계산
+		    int totalMails = list.size();
+
+		    // 페이징 처리
+		    int start = (page - 1) * size;
+		    int end = Math.min(start + size, list.size());
+		    List<MailDTO> paginatedList = list.subList(start, end);
+
+		    // 반환할 데이터 맵 구성
+		    Map<String, Object> response = new HashMap<>();
+		    response.put("mails", paginatedList);
+		    response.put("total", totalMails);
+
+		    return ResponseEntity.ok(response);
 		}
 		
 		//선택된 메일 삭제
