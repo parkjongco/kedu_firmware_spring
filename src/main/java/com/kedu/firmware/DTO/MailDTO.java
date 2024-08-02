@@ -2,11 +2,7 @@ package com.kedu.firmware.DTO;
 
 import java.sql.Timestamp;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class MailDTO {
 	private int mail_seq;
 	private int mail_sender_user_seq;
@@ -85,6 +81,5 @@ public class MailDTO {
 	public void setMail_sent_status(char mail_sent_status) {
 		this.mail_sent_status = mail_sent_status;
 	}
-	
-	
+
 }
