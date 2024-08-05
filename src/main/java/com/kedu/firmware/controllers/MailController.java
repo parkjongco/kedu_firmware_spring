@@ -87,8 +87,6 @@ public class MailController {
 	            System.out.println("Subject: " + subject);
 	            System.out.println("Message: " + message);
 	            
-	            //!!!!받는 사람도 구현해야함!!!!!!
-	            
 	            // 세션에 저장된 유저코드(로그인 아이디)로 유저 seq찾아서 저장
 	            String user_code = (String) session.getAttribute("loginID");
 	            UsersDTO usersdto = usersServ.getMemberById(user_code);

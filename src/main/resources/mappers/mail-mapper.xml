@@ -20,10 +20,16 @@
   	
   	<!-- 모든 메일함의 첫번째 메일 목록 가져오기 -->
   	<select id="selectAll" resultType="com.kedu.firmware.DTO.MailDTO">
-  		select * from mail m where mail_seq = (
-  			select MIN(mail_seq) from mail where mailbox_seq = m.mailbox_seq
-  		)
-  		 order by m.mail_seq desc
+  		select m.* 
+  from mail m 
+  inner join mail_carbon_copy mcc on m.mail_seq = mcc.mail_seq
+  inner join users u on u.users_email = mcc.mail_carbon_copy_receiver
+  where m.mail_seq = (
+    select MIN(mail_seq) 
+    from mail 
+    where mailbox_seq = m.mailbox_seq
+  )
+  order by m.mail_seq desc
   	</select>
   	
   	<select id="selectBySeq" resultType="com.kedu.firmware.DTO.MailDTO">
