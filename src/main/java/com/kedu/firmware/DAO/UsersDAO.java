@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UsersDAO {
@@ -65,4 +66,11 @@ public class UsersDAO {
     public List<UsersDTO> getAllUsers() {
         return mybatis.selectList("Users.getAllUsers");
     }
+    
+    // 유저코드로 본인의 부서 인원들의 정보를 조회
+    // excludeLoginID는 조회에서 제외시킬 ID이다(본인)
+    public List<Map<String, String>> findDepartmentInfoByUserCode(String departmentPrefix, String excludeLoginID) {
+        return mybatis.selectList("Users.findDepartmentInfoByUserCode", Map.of("departmentPrefix", departmentPrefix, "excludeLoginID", excludeLoginID));
+    }
+    
 }

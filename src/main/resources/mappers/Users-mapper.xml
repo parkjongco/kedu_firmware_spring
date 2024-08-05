@@ -81,4 +81,17 @@
         SELECT * FROM users
     </select>
 
+	<!-- 로그인 아이디로 부서코드 조회-->
+	<!-- <select id="findDepartmentCodeByLoginID" resultType="string">
+		SELECT department_code FROM users WHERE users_code = #{loginID}
+	</select> -->
+
+	<!-- 부서 코드로 부서 구성원의 이메일과 이름 조회 -->
+	<select id="findDepartmentInfoByUserCode" resultType="map">
+		SELECT users_email, users_name
+    FROM users
+    WHERE users_code LIKE #{departmentPrefix} || '%'
+      AND users_code != #{excludeLoginID}
+	</select>
+	
 </mapper>
