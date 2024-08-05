@@ -11,4 +11,9 @@
         VALUES (#{reply_Seq}, #{reply_Uid}, #{reply_Contents}, (sysdate))
     </insert>
 
+    <select id="selectAll" resultType="com.kedu.firmware.DTO.Board_ReplyDTO">
+        SELECT * FROM board_reply
+        WHERE board_seq = #{board_seq}
+    </select>
+
 </mapper>
