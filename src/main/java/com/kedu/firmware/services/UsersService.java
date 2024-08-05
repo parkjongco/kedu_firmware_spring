@@ -14,6 +14,7 @@ import com.kedu.firmware.DAO.DepartmentDAO;
 import com.kedu.firmware.DAO.UnitDAO;
 import com.kedu.firmware.DAO.UsersDAO;
 import com.kedu.firmware.DTO.DepartmentDTO;
+import com.kedu.firmware.DTO.MailDTO;
 import com.kedu.firmware.DTO.UnitDTO;
 import com.kedu.firmware.DTO.UsersDTO;
 
@@ -150,8 +151,10 @@ public class UsersService {
         return usersDAO.findDepartmentInfoByUserCode(departmentPrefix,loginID);
     }
     
+    // 이메일로 유저의 정보 찾아오기
     public UsersDTO selectUserByEmail(String Email) {
     	return usersDAO.selectUserByEmail(Email);
     }
+    
     
 }

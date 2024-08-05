@@ -52,8 +52,7 @@ public class MailService {
         maildto.setMailbox_seq(originalMail.getMailbox_seq());
 		maildao.replyMail(maildto);
 	}
-	
-	
+		
 	public List<MailDTO> getAllMails(){
 		return maildao.selectAllMails();
 	}
@@ -66,6 +65,10 @@ public class MailService {
 		return maildao.deleteById(id);
 	}
 	
+	
+//	public List<MailDTO> findEmailByMailSeq(int seq){
+//		return maildao.selectBy
+//	}
 	
 //	//유저 정보 받아오기
 //	public UsersDTO getUserInfo(int sender_user_seq) {

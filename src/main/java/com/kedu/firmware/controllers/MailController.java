@@ -175,6 +175,32 @@ public class MailController {
 			return ResponseEntity.ok().build();
 		}
 		
+		
+		//회신일 경우에 받는사람 입력란에 이메일 자동으로 완성해주기위한 기능
+	    @GetMapping("/{replyToMailId}/replyemail")
+	    public ResponseEntity<String> getReplyEmail(@PathVariable Integer replyToMailId) {
+	        try {
+	            List<MailDTO> originalMail = mailServ.selectByMailSeq(replyToMailId);
+	            
+	            UsersDTO userdto =  usersServ.findUserBySeq(originalMail.get(0).getMail_sender_user_seq());
+	            
+	            
+	            System.out.println("회신할 사람의 이메일은" + userdto.getUsers_email());
+	            if (userdto.getUsers_email() == null) {
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	            }
+	            
+	            return ResponseEntity.ok(userdto.getUsers_email());
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	        }
+	    }
+		
+		
+		
+		
+		
 //		//보내는 이의 seq 값으로 보내는이의 정보 받아오기 (이름과 이메일 등)
 //		@GetMapping("/{sender_user_seq}")
 //		public ResponseEntity<UsersDTO> get(int sender_user_seq){  
