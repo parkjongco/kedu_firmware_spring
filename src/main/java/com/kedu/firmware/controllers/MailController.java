@@ -17,16 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kedu.firmware.DTO.MailDTO;
+import com.kedu.firmware.DTO.UsersDTO;
 import com.kedu.firmware.services.MailService;
+import com.kedu.firmware.services.UsersService;
 
 import jakarta.servlet.http.HttpSession;
 
 
-
+@RestController
+@RequestMapping("/mail")
 public class MailController {
 
 	@Autowired
 	private MailService mailServ;
+	
+	@Autowired
+	private UsersService usersServ;
 	
 	@Autowired
     private HttpSession session;
@@ -67,8 +73,10 @@ public class MailController {
 	            
 	            //!!!!받는 사람도 구현해야함!!!!!!
 	            
-	            
-	            int loginID = (int) session.getAttribute("loginID");
+	            // 세션에 저장된 유저코드(로그인 아이디)로 유저 seq찾아서 저장
+	            String user_code = (String) session.getAttribute("loginID");
+	            UsersDTO usersdto = usersServ.getMemberById(user_code);
+	            int loginID = usersdto.getUsers_seq();
 	            
 	            if (replyToMailId != null) {
 	            	//회신 메일 처리
