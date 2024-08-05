@@ -73,4 +73,9 @@ public class UsersDAO {
         return mybatis.selectList("Users.findDepartmentInfoByUserCode", Map.of("departmentPrefix", departmentPrefix, "excludeLoginID", excludeLoginID));
     }
     
+    public UsersDTO selectUserByEmail(String Email) {
+    	return mybatis.selectOne("Users.selectUserByEmail", Email);
+
+    }
+    
 }

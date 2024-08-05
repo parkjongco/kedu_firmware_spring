@@ -150,4 +150,8 @@ public class UsersService {
         return usersDAO.findDepartmentInfoByUserCode(departmentPrefix,loginID);
     }
     
+    public UsersDTO selectUserByEmail(String Email) {
+    	return usersDAO.selectUserByEmail(Email);
+    }
+    
 }

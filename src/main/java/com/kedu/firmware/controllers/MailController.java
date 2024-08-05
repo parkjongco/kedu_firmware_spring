@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kedu.firmware.DTO.MailCarbonCopyDTO;
 import com.kedu.firmware.DTO.MailDTO;
 import com.kedu.firmware.DTO.UsersDTO;
+import com.kedu.firmware.services.MailCarbonCopyService;
 import com.kedu.firmware.services.MailService;
 import com.kedu.firmware.services.UsersService;
 
@@ -35,6 +39,9 @@ public class MailController {
 	private UsersService usersServ;
 	
 	@Autowired
+	private MailCarbonCopyService mailCarbonCopyServ;
+	
+	@Autowired
     private HttpSession session;
 	
 	//-----------------------------
@@ -44,8 +51,10 @@ public class MailController {
 		//해당 메일함의 seq를 가진 메일이 작성된다.
 		//회신할때는 메일함이 생성되는 것이 아닌, 해당 메일함의 seq를 가진 새로운 메일이 추가된다.
 		//즉, createMail은 새로운 메일함과 메일을 동시에 생성하는 것
-	
+
+		
 		@PostMapping
+		@Transactional
 		public ResponseEntity<String> createMail(
 				@RequestParam("to") String to,
 	            @RequestParam("subject") String subject,
@@ -68,6 +77,13 @@ public class MailController {
 	            // 보낸이 받고
 	            // 보내는 이는 일단 임의의 값 집어넣어서 테스트
 				System.out.println("To: " + to);
+				UsersDTO user = usersServ.selectUserByEmail(to);
+				
+				if(user == null) {
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+				}
+				
+				
 	            System.out.println("Subject: " + subject);
 	            System.out.println("Message: " + message);
 	            
@@ -83,10 +99,24 @@ public class MailController {
 	            	System.out.println("회신하고자하는 메일의 ID " + replyToMailId);
 	            	// 원본 메일의 MAILBOX_SEQ 가져오기위해 서비스로 replyToMailID넘겨준다.
 	                
-	            	mailServ.replyMail(new MailDTO(0, loginID, replyToMailId, subject, message, null, null, null, 'N', 'N', 'Y'));
+	            	MailDTO maildto = new MailDTO(0, loginID, replyToMailId, subject, message, null, null, null, 'N', 'N', 'Y');
+	            	mailServ.replyMail(maildto);
+	            	// 이 시점에서 새로 보낸 메일의 seq가 반환되어 mail_carbon_copy_seq에 들어간다
+	            	int mail_seq = maildto.getMail_seq();
+	            	System.out.println("carbon에들어갈 seq" + mail_seq);
+	            	System.out.println(to);
+	            	mailCarbonCopyServ.saveMailRecipient(new MailCarbonCopyDTO(0,to,mail_seq,0,0,"reply","Y"));
+	            	
 	            }else {
 	            	//새로운 메일 작성 처리
-	            	mailServ.insertMail(new MailDTO(0,loginID,0,subject,message,null,null,null,'N','N','Y'));
+	            	MailDTO maildto = new MailDTO(0,loginID,0,subject,message,null,null,null,'N','N','Y');
+	            	mailServ.insertMail(maildto);
+	            	// 이 시점에서 새로 보낸 메일의 seq가 반환되어 mail_carbon_copy_seq에 들어간다
+	            	int mail_seq = maildto.getMail_seq();
+	            	System.out.println("carbon에들어갈 seq" + mail_seq);
+	            	System.out.println(to);
+	            	mailCarbonCopyServ.saveMailRecipient(new MailCarbonCopyDTO(0,to,mail_seq,0,0,"reply","Y"));
+	            	
 	            }
 	            
 	            return ResponseEntity.ok("메일이 성공적으로 전송되었습니다.");
