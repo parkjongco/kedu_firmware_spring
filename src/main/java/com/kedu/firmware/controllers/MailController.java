@@ -216,7 +216,7 @@ public class MailController {
 		
 		
 		
-		
+//
 //		//보내는 이의 seq 값으로 보내는이의 정보 받아오기 (이름과 이메일 등)
 //		@GetMapping("/{sender_user_seq}")
 //		public ResponseEntity<UsersDTO> get(int sender_user_seq){  
