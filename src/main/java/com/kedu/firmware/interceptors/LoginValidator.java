@@ -31,10 +31,13 @@ public class LoginValidator implements HandlerInterceptor {
         System.out.println("인터셉터 동작 확인");
         String loginID = (String) session.getAttribute("loginID");
         if (loginID != null) {
+            System.out.println("LoginId : " + loginID);
             return true; // 로그인된 사용자의 경우 요청을 계속 처리
         }
+        System.out.println("NoLoginId");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 로그인되지 않은 경우 401 Unauthorized 상태 반환
         return false; // 요청 처리 중단
+
     }
 
     // 핸들러가 실행된 후 호출
