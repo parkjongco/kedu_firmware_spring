@@ -130,8 +130,8 @@ public class MailController {
 		public ResponseEntity<Map<String, Object>> get(
 		        @RequestParam(value = "seq", required = false) Integer seq,
 		        @RequestParam(value = "query", required = false) String query,
-		        @RequestParam(value = "page", defaultValue = "1") int page, // 추가된 부분: 페이지 번호
-		        @RequestParam(value = "size", defaultValue = "10") int size // 추가된 부분: 페이지 당 메일 수
+		        @RequestParam(value = "page", defaultValue = "1") int page, // 페이지 번호
+		        @RequestParam(value = "size", defaultValue = "10") int size // 페이지 당 메일 수
 		) { // 모호성 문제(ambious)로 매핑을 나누지않고 같은 매핑안에서 사용해야한다. 
 
 		    // 분기점을 내부에서 만든다.
