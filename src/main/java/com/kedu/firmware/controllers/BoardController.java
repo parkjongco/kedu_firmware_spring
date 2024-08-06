@@ -39,14 +39,14 @@ public class BoardController {
         }
     }
 
-//    삭제
+    //    삭제
     @DeleteMapping("/{seq}")
     public ResponseEntity<Void> deleteBySeq(@PathVariable int seq) {
         boardService.deleteBySeq(seq);
         return ResponseEntity.ok().build();
     }
 
-//    업데이트
+    //    업데이트
     @PutMapping("/{seq}")
     public ResponseEntity<Void> updateBySeq(@RequestBody BoardDTO dto, @PathVariable int seq) {
         // seq 값을 dto에 설정 (DTO에 seq 필드가 있어야 합니다)
@@ -55,4 +55,10 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
+    //    조회수
+    @PutMapping("/viewCount")
+    public ResponseEntity<Void> incrementViewCount(@RequestParam("boardSeq") int boardSeq) {
+        boardService.incrementViewCount(boardSeq);
+        return ResponseEntity.ok().build();
+    }
 }
