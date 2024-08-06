@@ -80,6 +80,11 @@
     <select id="getAllUsers" resultType="com.kedu.firmware.DTO.UsersDTO">
         SELECT * FROM users
     </select>
+    
+     <!-- 사용자 코드를 통해 사용자 삭제 -->
+    <delete id="deleteUserByCode" parameterType="String">
+        DELETE FROM users WHERE users_code = #{users_code}
+    </delete>
 
 	<!-- 유저 코드로 본인을 제외한 부서 구성원의 이메일과 이름 조회 (이메일)-->
 	<select id="findDepartmentInfoByUserCode" resultType="map">
