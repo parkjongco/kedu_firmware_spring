@@ -35,6 +35,8 @@ public class BoardService {
         return boardDAO.updateBySeq(dto);
     }
 
-
+    public void incrementViewCount(int board_Seq) {
+        boardDAO.incrementViewCount(board_Seq);
+    }
 
 }

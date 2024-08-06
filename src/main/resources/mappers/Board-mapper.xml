@@ -30,6 +30,12 @@
         WHERE board_seq = #{board_seq}
     </update>
 
+    <update id="incrementViewCount" >
+        UPDATE board
+        SET board_view_count = board_view_count + 1
+        WHERE board_seq = #{board_seq}
+    </update>
+
 
 
 
