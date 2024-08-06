@@ -3,8 +3,11 @@ package com.kedu.firmware.services;
 
 import com.kedu.firmware.DAO.MailBoxDAO;
 import com.kedu.firmware.DAO.MailDAO;
+import com.kedu.firmware.DAO.UsersDAO;
 import com.kedu.firmware.DTO.MailBoxDTO;
 import com.kedu.firmware.DTO.MailDTO;
+import com.kedu.firmware.DTO.UsersDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,9 @@ public class MailService {
 	
 	@Autowired
 	private MailBoxDAO mailboxdao;
+	
+	@Autowired
+	private UsersDAO usersdao;
 	
 	// 메일작성
 	@Transactional //원자성을 위해서 둘 중 하나라도 실패하면 둘 다 취소되어야한다.
@@ -53,8 +59,12 @@ public class MailService {
 		maildao.replyMail(maildto);
 	}
 		
-	public List<MailDTO> getAllMails(){
-		return maildao.selectAllMails();
+	public List<MailDTO> getAllMails(String loginID){
+		
+		
+		UsersDTO usersdto =  usersdao.findUserByCode(loginID);
+		String Email = usersdto.getUsers_email();
+		return maildao.selectAllMails(Email);
 	}
 	
 	public List<MailDTO> selectByMailSeq(int seq){

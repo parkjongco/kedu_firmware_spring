@@ -28,8 +28,8 @@ public class MailDAO {
         return mybatis.selectOne("Mail.getMailById", mailId);
     }
 	
-	public List<MailDTO> selectAllMails(){
-		return mybatis.selectList("Mail.selectAll");
+	public List<MailDTO> selectAllMails(String Email){
+		return mybatis.selectList("Mail.selectAll", Email);
 	}
 	
 	public List<MailDTO> selectByMailSeq(int seq){ 

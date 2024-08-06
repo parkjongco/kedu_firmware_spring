@@ -113,7 +113,7 @@ public class MailController {
 	            	int mail_seq = maildto.getMail_seq();
 	            	System.out.println("carbon에들어갈 seq" + mail_seq);
 	            	System.out.println(to);
-	            	mailCarbonCopyServ.saveMailRecipient(new MailCarbonCopyDTO(0,to,mail_seq,0,0,"reply","Y"));
+	            	mailCarbonCopyServ.saveMailRecipient(new MailCarbonCopyDTO(0,to,mail_seq,0,0,"send","Y"));
 	            	
 	            }
 	            
@@ -143,14 +143,28 @@ public class MailController {
 
 		    // 메일 리스트반환
 		    // 메일함 목록을 보여주어야하기때문에 각 메일함에서 첫번째로 작성된 메일들만 출력해야한다.
-		    List<MailDTO> list = mailServ.getAllMails();
+		    List<MailDTO> list = mailServ.getAllMails((String)session.getAttribute("loginID"));
 
 		    // 검색어가 있는 경우 필터링
 		    if (query != null && !query.isEmpty()) {
+		    	System.out.println("검색어는 " + query);
 		        list = list.stream()
 		            .filter(mail -> mail.getMail_title().contains(query) || mail.getMail_content().contains(query))
 		            .collect(Collectors.toList());
+		        
 		    }
+		    System.out.println(list.size()); 
+		 // 필터링된 list의 각 요소 출력
+		    list.forEach(mail -> {
+		        System.out.println("Mail Seq: " + mail.getMail_seq());
+		        System.out.println("Mail Title: " + mail.getMail_title());
+		        System.out.println("Mail Content: " + mail.getMail_content());
+		        System.out.println("Mail Sender User Seq: " + mail.getMail_sender_user_seq());
+		        System.out.println("Mailbox Seq: " + mail.getMailbox_seq());
+		        System.out.println("Mail Received Date: " + mail.getMail_received_date());
+		        System.out.println("------------------------------");
+		        
+		    });
 
 		    // 전체 메일 수 계산
 		    int totalMails = list.size();
