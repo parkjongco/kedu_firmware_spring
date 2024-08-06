@@ -81,17 +81,4 @@
         SELECT * FROM users
     </select>
 
-	<!-- 유저 코드로 본인을 제외한 부서 구성원의 이메일과 이름 조회 (이메일)-->
-	<select id="findDepartmentInfoByUserCode" resultType="map">
-		SELECT users_email, users_name
-    FROM users
-    WHERE users_code LIKE #{departmentPrefix} || '%'
-      AND users_code != #{excludeLoginID}
-	</select>
-	
-	<!-- 유저 이메일로 해당하는 유저가 있는지 조회하는 쿼리 (이메일)-->
-	<select id="selectUserByEmail" resultType="com.kedu.firmware.DTO.UsersDTO">
-		select * from users where users_email = #{Email}
-	</select>
-	
 </mapper>

@@ -1,66 +1,27 @@
 package com.kedu.firmware.controllers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.kedu.firmware.DTO.MailDTO;
+import com.kedu.firmware.services.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.kedu.firmware.DTO.MailCarbonCopyDTO;
-import com.kedu.firmware.DTO.MailDTO;
-import com.kedu.firmware.DTO.UsersDTO;
-import com.kedu.firmware.services.MailCarbonCopyService;
-import com.kedu.firmware.services.MailService;
-import com.kedu.firmware.services.UsersService;
 
-import jakarta.servlet.http.HttpSession;
-
-
-@RestController
-@RequestMapping("/mail")
 public class MailController {
 
 	@Autowired
 	private MailService mailServ;
 	
-	@Autowired
-	private UsersService usersServ;
-	
-	@Autowired
-	private MailCarbonCopyService mailCarbonCopyServ;
-	
-	@Autowired
-    private HttpSession session;
-	
 	//-----------------------------
 		//메일 작성
-		//메일 작성에 대해
-		//메일 작성을 하면 메일함이 생성된다
-		//해당 메일함의 seq를 가진 메일이 작성된다.
-		//회신할때는 메일함이 생성되는 것이 아닌, 해당 메일함의 seq를 가진 새로운 메일이 추가된다.
-		//즉, createMail은 새로운 메일함과 메일을 동시에 생성하는 것
-
-		
 		@PostMapping
-		@Transactional
 		public ResponseEntity<String> createMail(
 				@RequestParam("to") String to,
 	            @RequestParam("subject") String subject,
 	            @RequestParam("message") String message,
-	            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments,
-	            @RequestParam(value = "replyToMailId", required = false) Integer replyToMailId) {
+	            @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
 			System.out.println("첨부파일 있는지 확인 중");
 			try {
 	            // 첨부 파일 처리
@@ -77,46 +38,11 @@ public class MailController {
 	            // 보낸이 받고
 	            // 보내는 이는 일단 임의의 값 집어넣어서 테스트
 				System.out.println("To: " + to);
-				UsersDTO user = usersServ.selectUserByEmail(to);
-				
-				if(user == null) {
-					return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-				}
-				
-				
 	            System.out.println("Subject: " + subject);
 	            System.out.println("Message: " + message);
+	            mailServ.insertMail(new MailDTO(3,3,3,subject,message,null,null,null,'N','N','Y'));
 	            
-	            // 세션에 저장된 유저코드(로그인 아이디)로 유저 seq찾아서 저장
-	            String user_code = (String) session.getAttribute("loginID");
-	            UsersDTO usersdto = usersServ.getMemberById(user_code);
-	            int loginID = usersdto.getUsers_seq();
-	            
-	            if (replyToMailId != null) {
-	            	//회신 메일 처리
-	            	System.out.println("회신하고자하는 메일의 ID " + replyToMailId);
-	            	// 원본 메일의 MAILBOX_SEQ 가져오기위해 서비스로 replyToMailID넘겨준다.
-	                
-	            	MailDTO maildto = new MailDTO(0, loginID, replyToMailId, subject, message, null, null, null, 'N', 'N', 'Y');
-	            	mailServ.replyMail(maildto);
-	            	// 이 시점에서 새로 보낸 메일의 seq가 반환되어 mail_carbon_copy_seq에 들어간다
-	            	int mail_seq = maildto.getMail_seq();
-	            	System.out.println("carbon에들어갈 seq" + mail_seq);
-	            	System.out.println(to);
-	            	mailCarbonCopyServ.saveMailRecipient(new MailCarbonCopyDTO(0,to,mail_seq,0,0,"reply","Y"));
-	            	
-	            }else {
-	            	//새로운 메일 작성 처리
-	            	MailDTO maildto = new MailDTO(0,loginID,0,subject,message,null,null,null,'N','N','Y');
-	            	mailServ.insertMail(maildto);
-	            	// 이 시점에서 새로 보낸 메일의 seq가 반환되어 mail_carbon_copy_seq에 들어간다
-	            	int mail_seq = maildto.getMail_seq();
-	            	System.out.println("carbon에들어갈 seq" + mail_seq);
-	            	System.out.println(to);
-	            	mailCarbonCopyServ.saveMailRecipient(new MailCarbonCopyDTO(0,to,mail_seq,0,0,"send","Y"));
-	            	
-	            }
-	            
+
 	            return ResponseEntity.ok("메일이 성공적으로 전송되었습니다.");
 	        } catch (Exception e) {
 	            e.printStackTrace();
@@ -220,12 +146,11 @@ public class MailController {
 //		//보내는 이의 seq 값으로 보내는이의 정보 받아오기 (이름과 이메일 등)
 //		@GetMapping("/{sender_user_seq}")
 //		public ResponseEntity<UsersDTO> get(int sender_user_seq){  
-//			
-//			//메일 리스트반환
-//			UsersDTO senderInfo = usersServ.getSenderInfo(sender_user_seq);
-//
-//			return ResponseEntity.ok(senderInfo);
-//		}		
 
+//			//메일 리스트반환
+//			List<MailDTO> list = mailServ.getAllMails();
+//			return ResponseEntity.ok(list);
+//		}
+		
 		
 }

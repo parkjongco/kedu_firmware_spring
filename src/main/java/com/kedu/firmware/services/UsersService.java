@@ -1,10 +1,7 @@
 package com.kedu.firmware.services;
 
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +11,6 @@ import com.kedu.firmware.DAO.DepartmentDAO;
 import com.kedu.firmware.DAO.UnitDAO;
 import com.kedu.firmware.DAO.UsersDAO;
 import com.kedu.firmware.DTO.DepartmentDTO;
-import com.kedu.firmware.DTO.MailDTO;
 import com.kedu.firmware.DTO.UnitDTO;
 import com.kedu.firmware.DTO.UsersDTO;
 
@@ -139,22 +135,4 @@ public class UsersService {
     public List<UsersDTO> getAllUsers() {
         return usersDAO.getAllUsers();
     }
-    
-    // 로그인ID(유저 코드)로 부서내 인원들의 정보(이메일, 이름)를 가져옴
-    // 본인의 유저코드를 잘라서 사용해 유사 부서에 있는 인원들의 정보를 찾아오고 본인의 정보는 제외함
-    public List<Map<String, String>> getDepartmentMemberInfoByLoginID(String loginID){
-
-    	
-    	String departmentPrefix = loginID.split("-")[0];
-    	
-    	
-        return usersDAO.findDepartmentInfoByUserCode(departmentPrefix,loginID);
-    }
-    
-    // 이메일로 유저의 정보 찾아오기
-    public UsersDTO selectUserByEmail(String Email) {
-    	return usersDAO.selectUserByEmail(Email);
-    }
-    
-    
 }
