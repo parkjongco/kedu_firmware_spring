@@ -30,4 +30,10 @@ public class EmployeeDAO {
     public void delete(int employeeSeq) {
         mybatis.delete("Employee.deleteEmployee", employeeSeq);
     }
+    
+    // 특정 사용자 시퀀스를 기반으로 직원 레코드 삭제
+    // 지정된 user_seq를 참조하는 모든 직원 레코드를 삭제
+    public void deleteByUserSeq(int userSeq) {
+        mybatis.delete("Employee.deleteByUserSeq", userSeq);
+    }
 }
