@@ -1,7 +1,6 @@
 package com.kedu.firmware.services;
 
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -10,11 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.kedu.firmware.DAO.DepartmentDAO;
+import com.kedu.firmware.DAO.EmployeeDAO;
 import com.kedu.firmware.DAO.UnitDAO;
 import com.kedu.firmware.DAO.UsersDAO;
 import com.kedu.firmware.DTO.DepartmentDTO;
-import com.kedu.firmware.DTO.MailDTO;
 import com.kedu.firmware.DTO.UnitDTO;
 import com.kedu.firmware.DTO.UsersDTO;
 
@@ -29,6 +29,9 @@ public class UsersService {
 
     @Autowired
     private DepartmentDAO departmentDAO;
+    
+    @Autowired
+    private EmployeeDAO employeeDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(UsersService.class);
 
@@ -138,6 +141,19 @@ public class UsersService {
     // 데이터베이스의 모든 사용자를 조회하여 반환
     public List<UsersDTO> getAllUsers() {
         return usersDAO.getAllUsers();
+    }
+    
+    // 사용자 코드로 사용자 삭제
+    // 사용자 코드를 통해 사용자를 삭제하는 메서드
+    @Transactional
+    public void deleteUserByCode(String users_code) {
+        UsersDTO user = usersDAO.findUserByCode(users_code);
+        if (user != null) {
+            // 해당 사용자의 관련된 employee 레코드를 삭제
+            employeeDAO.deleteByUserSeq(user.getUsers_seq());
+            // 이후 사용자 레코드 삭제
+            usersDAO.deleteByCode(users_code);
+        }
     }
     
     // 로그인ID(유저 코드)로 부서내 인원들의 정보(이메일, 이름)를 가져옴
