@@ -21,7 +21,8 @@ public class NoticeDAO {
     }
 
     public NoticeDTO selectBySeq(int seq) {
-        return mybatis.selectOne("notice.selectOne", seq);
+        return mybatis.selectOne("notice.selectBySeq", seq);
     }
+
 
 }

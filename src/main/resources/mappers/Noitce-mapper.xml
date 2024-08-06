@@ -9,7 +9,7 @@
     </insert>
 
     <select id="selectAll" resultType="com.kedu.firmware.DTO.NoticeDTO">
-        SELECT * FROM notice
+        SELECT * FROM notice ORDER BY notice_write_date DESC
     </select>
 
     <select id="selectBySeq" parameterType="int" resultType="com.kedu.firmware.DTO.NoticeDTO">
