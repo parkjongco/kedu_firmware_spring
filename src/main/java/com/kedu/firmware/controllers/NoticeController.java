@@ -29,14 +29,16 @@ public class NoticeController {
         return ResponseEntity.ok(notices);
     }
 
-    @GetMapping("/detail/{seq}")
-    public ResponseEntity<NoticeDTO> getBySeq(@PathVariable  int seq) {
-        NoticeDTO notice = noticeService.getNotice(seq);
+    @GetMapping
+    public ResponseEntity<NoticeDTO> getById(@RequestParam Long seq) {
+        NoticeDTO notice =noticeService.getNoticeBySeq(seq);
         if(notice != null) {
             return ResponseEntity.ok(notice);
-        } else {
+        }
+        else{
             return ResponseEntity.notFound().build();
         }
     }
+
 
 }
