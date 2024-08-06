@@ -153,18 +153,20 @@ public class MailController {
 		            .collect(Collectors.toList());
 		        
 		    }
-		    System.out.println(list.size()); 
-		 // 필터링된 list의 각 요소 출력
-		    list.forEach(mail -> {
-		        System.out.println("Mail Seq: " + mail.getMail_seq());
-		        System.out.println("Mail Title: " + mail.getMail_title());
-		        System.out.println("Mail Content: " + mail.getMail_content());
-		        System.out.println("Mail Sender User Seq: " + mail.getMail_sender_user_seq());
-		        System.out.println("Mailbox Seq: " + mail.getMailbox_seq());
-		        System.out.println("Mail Received Date: " + mail.getMail_received_date());
-		        System.out.println("------------------------------");
-		        
-		    });
+		    
+//		    // 검색기능 테스트 코드
+//		    System.out.println(list.size()); 
+//		 // 필터링된 list의 각 요소 출력
+//		    list.forEach(mail -> {
+//		        System.out.println("Mail Seq: " + mail.getMail_seq());
+//		        System.out.println("Mail Title: " + mail.getMail_title());
+//		        System.out.println("Mail Content: " + mail.getMail_content());
+//		        System.out.println("Mail Sender User Seq: " + mail.getMail_sender_user_seq());
+//		        System.out.println("Mailbox Seq: " + mail.getMailbox_seq());
+//		        System.out.println("Mail Received Date: " + mail.getMail_received_date());
+//		        System.out.println("------------------------------");
+//		        
+//		    });
 
 		    // 전체 메일 수 계산
 		    int totalMails = list.size();
