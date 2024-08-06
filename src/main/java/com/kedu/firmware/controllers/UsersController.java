@@ -11,11 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kedu.firmware.DTO.MailDTO;
 import com.kedu.firmware.DTO.UsersDTO;
 import com.kedu.firmware.services.UsersService;
 
 import jakarta.servlet.http.HttpSession;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -74,4 +78,23 @@ public class UsersController {
         List<UsersDTO> users = usersService.getAllUsers();
         return ResponseEntity.ok(users);
     }
+    
+    @GetMapping("/{loginID}/departmentmemberinfo")
+    public ResponseEntity<List<Map<String, String>>> getDepartmentMemberInfo(@PathVariable String loginID){
+    	System.out.println(loginID);
+    	List<Map<String, String>> Info = usersService.getDepartmentMemberInfoByLoginID(loginID);
+    	
+    	System.out.println("부서 정보 찾는데 성공했음");
+        if (Info.isEmpty()) {
+        	System.out.println("부서 사람이 없음");
+            return ResponseEntity.noContent().build();
+        }
+        
+        return ResponseEntity.ok(Info);
+    	
+    }
+    
+    
+    
+    
 }

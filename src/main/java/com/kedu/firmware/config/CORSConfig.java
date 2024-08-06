@@ -22,4 +22,5 @@ public class CORSConfig implements WebMvcConfigurer {
             .allowedHeaders("*")
             .allowCredentials(true); // allowCredentials(true)와 함께 '*'를 사용하면 오류가 발생할 수 있음
     }
+
 }
