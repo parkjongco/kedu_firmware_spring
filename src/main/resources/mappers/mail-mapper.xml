@@ -21,18 +21,18 @@
   	<!-- 모든 메일함의 첫번째 메일 목록 가져오기 -->
   	<!-- 본인이 작성하거나, 받은 메일만 목록에서 확인 -->
   	<select id="selectAll" resultType="com.kedu.firmware.DTO.MailDTO">
-  		SELECT m.* 
-FROM mail m 
-INNER JOIN mail_carbon_copy mcc ON m.mail_seq = mcc.mail_seq
-INNER JOIN users u ON u.users_email = mcc.mail_carbon_copy_receiver
-WHERE m.mail_seq = (
-  SELECT MIN(mail_seq) 
-  FROM mail 
-  WHERE mailbox_seq = m.mailbox_seq
-)
-AND (m.mail_sender_user_seq = (SELECT users_seq FROM users WHERE users_email = #{Email})
-OR mcc.mail_carbon_copy_receiver = #{Email})
-ORDER BY m.mail_seq DESC
+		  		SELECT m.* 
+		FROM mail m 
+		INNER JOIN mail_carbon_copy mcc ON m.mail_seq = mcc.mail_seq
+		INNER JOIN users u ON u.users_email = mcc.mail_carbon_copy_receiver
+		WHERE m.mail_seq = (
+		  SELECT MIN(mail_seq) 
+		  FROM mail 
+		  WHERE mailbox_seq = m.mailbox_seq
+		)
+		AND (m.mail_sender_user_seq = (SELECT users_seq FROM users WHERE users_email = #{Email})
+		OR mcc.mail_carbon_copy_receiver = #{Email})
+		ORDER BY m.mail_seq DESC
 
   	</select>
   	
