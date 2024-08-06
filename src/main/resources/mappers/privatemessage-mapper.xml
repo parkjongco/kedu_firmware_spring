@@ -36,4 +36,6 @@
            OR (sender_username = #{receiver} AND receiver_username = #{sender})
         ORDER BY send_date
     </select>
+    
+   
 </mapper>

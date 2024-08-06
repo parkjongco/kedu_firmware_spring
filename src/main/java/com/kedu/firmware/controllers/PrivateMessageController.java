@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.logging.Logger;
 
+// PrivateMessageController 클래스는 메시지 관련 REST API 엔드포인트를 제공합니다.
+// 메시지 전송, 조회 및 읽음 처리 등의 기능을 제공합니다.
 @RestController
 @RequestMapping("/messages")
 public class PrivateMessageController {
@@ -24,6 +26,8 @@ public class PrivateMessageController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    // 메시지를 전송하는 엔드포인트
+    // 메시지를 저장하고 수신자의 개인 큐로 전송합니다.
     @PostMapping("/send")
     public ResponseEntity<String> sendMessage(@RequestBody PrivateMessageDTO message) {
         // 메시지 유효성 검사
@@ -48,6 +52,7 @@ public class PrivateMessageController {
         }
     }
 
+    // WebSocket을 통해 채팅 메시지를 처리하는 메서드
     @MessageMapping("/chat")
     public void handleChatMessage(PrivateMessageDTO message) {
         logger.info("Handle chat message received: " + message.toString());
@@ -69,6 +74,7 @@ public class PrivateMessageController {
         }
     }
 
+    // 특정 참여자 간의 메시지를 조회하는 엔드포인트
     @GetMapping("/chat/{sender}/{receiver}")
     public ResponseEntity<List<PrivateMessageDTO>> getMessagesBetweenParticipants(
             @PathVariable String sender,
