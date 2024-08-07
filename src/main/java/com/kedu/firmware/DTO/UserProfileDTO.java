@@ -1,33 +1,45 @@
 package com.kedu.firmware.DTO;
 
+import java.util.Date;
+
 public class UserProfileDTO {
-    private Long userProfileSeq; // user_profile_seq: 기본 키
-    private Long userSeq; // user_seq: 사용자를 참조하는 외래 키
-    private String phoneNumber; // phone_number: 전화번호
-    private String address; // address: 주소
-    private String profilePictureUrl; // profile_picture_url: 프로필 사진 URL
-    private String rank; // rank: 직책
-    private String employeeId; // employee_id: 사번
-    private String joinDate; // join_date: 입사일
-    private String email; // email: 이메일
+    private Long userProfileSeq;        // 사용자 프로필 고유 번호
+    private Long userSeq;               // 사용자 고유 번호
+    private String phoneNumber;         // 전화번호
+    private String address;             // 주소
+    private String zipCode;             // 우편번호
+    private String detailedAddress;     // 상세 주소
+    private String profilePictureUrl;   // 프로필 사진 URL
+    private String rank;                // 직책
+    private String employeeId;          // 사번
+    private Date joinDate;              // 입사일
+    private String email;               // 이메일
 
     // 기본 생성자
-    public UserProfileDTO() {}
-
-    // 모든 필드를 포함한 생성자
-    public UserProfileDTO(Long userProfileSeq, Long userSeq, String phoneNumber, String address, String profilePictureUrl, String rank, String employeeId, String joinDate, String email) {
-        this.userProfileSeq = userProfileSeq;
-        this.userSeq = userSeq;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.profilePictureUrl = profilePictureUrl;
-        this.rank = rank;
-        this.employeeId = employeeId;
-        this.joinDate = joinDate;
-        this.email = email;
+    public UserProfileDTO() {
     }
+    
 
-    // Getter 및 Setter 메소드
+    public UserProfileDTO(Long userProfileSeq, Long userSeq, String phoneNumber, String address, String zipCode,
+			String detailedAddress, String profilePictureUrl, String rank, String employeeId, Date joinDate,
+			String email) {
+		super();
+		this.userProfileSeq = userProfileSeq;
+		this.userSeq = userSeq;
+		this.phoneNumber = phoneNumber;
+		this.address = address;
+		this.zipCode = zipCode;
+		this.detailedAddress = detailedAddress;
+		this.profilePictureUrl = profilePictureUrl;
+		this.rank = rank;
+		this.employeeId = employeeId;
+		this.joinDate = joinDate;
+		this.email = email;
+	}
+
+
+	// 전체 필드에 대한 게터와 세터
+
     public Long getUserProfileSeq() {
         return userProfileSeq;
     }
@@ -60,6 +72,22 @@ public class UserProfileDTO {
         this.address = address;
     }
 
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getDetailedAddress() {
+        return detailedAddress;
+    }
+
+    public void setDetailedAddress(String detailedAddress) {
+        this.detailedAddress = detailedAddress;
+    }
+
     public String getProfilePictureUrl() {
         return profilePictureUrl;
     }
@@ -84,11 +112,11 @@ public class UserProfileDTO {
         this.employeeId = employeeId;
     }
 
-    public String getJoinDate() {
+    public Date getJoinDate() {
         return joinDate;
     }
 
-    public void setJoinDate(String joinDate) {
+    public void setJoinDate(Date joinDate) {
         this.joinDate = joinDate;
     }
 

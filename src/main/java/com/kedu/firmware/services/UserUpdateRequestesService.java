@@ -20,28 +20,39 @@ import com.kedu.firmware.DTO.UserUpdateRequestesDTO;
 @Service
 public class UserUpdateRequestesService {
 
+
     @Autowired
-    private UserUpdateRequestesDAO userUpdateRequestDAO;
-    
+    private UserUpdateRequestesDAO userUpdateRequestesDAO;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+    @Value("${server.url}")
+    private String serverUrl; // 서버의 URL을 설정 파일에서 불러오기
+
+    // 특정 ID로 사용자 업데이트 요청을 가져오는 메서드
     public UserUpdateRequestesDTO getUserUpdateRequestById(Long userUpdateRequestSeq) {
-        return userUpdateRequestDAO.getUserUpdateRequestById(userUpdateRequestSeq);
+        return userUpdateRequestesDAO.getUserUpdateRequestById(userUpdateRequestSeq);
     }
 
+    // 모든 사용자 업데이트 요청을 가져오는 메서드
     public List<UserUpdateRequestesDTO> getAllUserUpdateRequests() {
-        return userUpdateRequestDAO.getAllUserUpdateRequests();
+        return userUpdateRequestesDAO.getAllUserUpdateRequests();
     }
 
+    // 사용자 업데이트 요청을 생성하는 메서드
     @Transactional
-    public void createUserUpdateRequest(UserUpdateRequestesDTO userUpdateRequest) {
-        // 동일한 usersSeq로 기존 요청이 있는지 확인
-        UserUpdateRequestesDTO existingRequest = userUpdateRequestDAO.getUserUpdateRequestByUserSeq(userUpdateRequest.getUsersSeq());
+    public void createUserUpdateRequest(UserUpdateRequestesDTO userUpdateRequest, MultipartFile profileImage) throws IOException {
+        // 프로필 이미지가 있다면 저장하고 경로를 설정
+        if (profileImage != null && !profileImage.isEmpty()) {
+            String profileImageUrl = saveProfileImage(profileImage);
+            userUpdateRequest.setProfileImage(profileImageUrl);
+        }
 
+        // 기존 요청이 있는지 확인
+        UserUpdateRequestesDTO existingRequest = userUpdateRequestesDAO.getUserUpdateRequestByUserSeq(userUpdateRequest.getUsersSeq());
         if (existingRequest != null) {
-            // 기존 요청이 있다면 업데이트
+            // 기존 요청이 있으면 업데이트
             existingRequest.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             existingRequest.setEmail(userUpdateRequest.getEmail());
             existingRequest.setAddress(userUpdateRequest.getAddress());
@@ -56,53 +67,69 @@ public class UserUpdateRequestesService {
             existingRequest.setJoinDate(userUpdateRequest.getJoinDate());
             existingRequest.setApprover(userUpdateRequest.getApprover());
 
-            userUpdateRequestDAO.updateUserUpdateRequest(existingRequest);
+            userUpdateRequestesDAO.updateUserUpdateRequest(existingRequest);
         } else {
-            // 기존 요청이 없다면 새로 생성
-            userUpdateRequestDAO.insertUserUpdateRequest(userUpdateRequest);
+            // 새로운 요청을 생성
+            userUpdateRequestesDAO.insertUserUpdateRequest(userUpdateRequest);
         }
     }
 
+    // 사용자 업데이트 요청을 수정하는 메서드
     @Transactional
     public void updateUserUpdateRequest(UserUpdateRequestesDTO userUpdateRequest) {
-        userUpdateRequestDAO.updateUserUpdateRequest(userUpdateRequest);
+        userUpdateRequestesDAO.updateUserUpdateRequest(userUpdateRequest);
     }
 
+    // 사용자 업데이트 요청을 삭제하는 메서드
     @Transactional
     public void deleteUserUpdateRequest(Long userUpdateRequestSeq) {
-        userUpdateRequestDAO.deleteUserUpdateRequest(userUpdateRequestSeq);
+        userUpdateRequestesDAO.deleteUserUpdateRequest(userUpdateRequestSeq);
     }
 
+    // 사용자 업데이트 요청을 승인하는 메서드
     @Transactional
     public void approveUserUpdateRequest(Long userUpdateRequestSeq) {
-        UserUpdateRequestesDTO request = userUpdateRequestDAO.getUserUpdateRequestById(userUpdateRequestSeq);
+        UserUpdateRequestesDTO request = userUpdateRequestesDAO.getUserUpdateRequestById(userUpdateRequestSeq);
         if (request != null) {
             request.setRequestStatus("승인됨");
-            // 사용자 프로필을 업데이트하는 로직이 추가되어야 함
-            // 예: userProfileService.updateUserProfile(request);
-            userUpdateRequestDAO.updateUserUpdateRequest(request); // 요청의 상태를 "승인됨"으로 업데이트
+            userUpdateRequestesDAO.updateUserUpdateRequest(request);
         } else {
             throw new IllegalArgumentException("Invalid request ID: " + userUpdateRequestSeq);
         }
     }
 
+    // 사용자 업데이트 요청을 거부하는 메서드
     @Transactional
     public void rejectUserUpdateRequest(Long userUpdateRequestSeq) {
-        UserUpdateRequestesDTO request = userUpdateRequestDAO.getUserUpdateRequestById(userUpdateRequestSeq);
+        UserUpdateRequestesDTO request = userUpdateRequestesDAO.getUserUpdateRequestById(userUpdateRequestSeq);
         if (request != null) {
             request.setRequestStatus("거부됨");
-            userUpdateRequestDAO.updateUserUpdateRequest(request); // 요청의 상태를 "거부됨"으로 업데이트
-            // 사용자 프로필은 업데이트하지 않음
+            userUpdateRequestesDAO.updateUserUpdateRequest(request);
         } else {
             throw new IllegalArgumentException("Invalid request ID: " + userUpdateRequestSeq);
         }
     }
-    // 프로필 이미지 저장 메소드
+
+    // 프로필 이미지를 저장하고 웹 경로를 반환하는 메서드
     public String saveProfileImage(MultipartFile file) throws IOException {
+        // 파일 이름 생성 (UUID와 원본 파일 이름 결합)
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        // 파일 경로 생성
         Path filePath = Paths.get(uploadDir + File.separator + fileName);
+
+        // 디버깅 로그 추가
+        System.out.println("파일 경로: " + filePath.toString());
+
+        // 디렉토리가 없으면 생성
         Files.createDirectories(filePath.getParent());
+        // 파일 쓰기
         Files.write(filePath, file.getBytes());
-        return filePath.toString();
+
+        String profileImageUrl = serverUrl + "/uploads/" + fileName;
+        // 경로 로그 추가
+        System.out.println("프로필 이미지 URL: " + profileImageUrl);
+
+        // 웹 브라우저에서 접근 가능한 경로로 반환
+        return profileImageUrl;
     }
 }
