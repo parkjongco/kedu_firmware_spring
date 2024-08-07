@@ -50,6 +50,14 @@ public class UsersDAO {
     public void deleteById(int users_seq) {
         mybatis.delete("Users.deleteUser", users_seq);
     }
+    
+    // 사용자 코드로 사용자 삭제
+    // 사용자 코드를 통해 사용자를 삭제하는 메서드
+    public void deleteByCode(String users_code) {
+        logger.info("deleteByCode 호출: users_code={}", users_code);
+        int affectedRows = mybatis.delete("Users.deleteUserByCode", users_code);
+        logger.info("deleteByCode 완료: {} 행이 삭제됨", affectedRows);
+    }
 
     // ID를 통해 사용자 조회
     public UsersDTO selectById(String id) {
