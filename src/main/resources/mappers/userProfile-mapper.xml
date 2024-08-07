@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="UserProfile">
 
@@ -78,7 +78,7 @@
         WHERE user_profile_seq = #{userProfileSeq}
     </update>
 
-    <!-- 프로필 정보 삭제 -->
+    <!-- 프로필 정보 삭제입니다. -->
     <delete id="deleteUserProfile">
         DELETE FROM user_profile WHERE user_profile_seq = #{userProfileSeq}
     </delete>
