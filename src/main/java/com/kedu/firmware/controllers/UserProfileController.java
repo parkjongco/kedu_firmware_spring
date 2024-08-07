@@ -1,5 +1,7 @@
 package com.kedu.firmware.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,8 @@ import com.kedu.firmware.services.UserProfileService;
 @RequestMapping("/user-profile")
 public class UserProfileController {
 
+	private static final Logger logger = LoggerFactory.getLogger(UserProfileController.class);
+
     @Autowired
     private UserProfileService userProfileService;
 
@@ -33,6 +37,7 @@ public class UserProfileController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
         } catch (Exception e) {
+            logger.error("Error getting user profile for user code: {}", userCode, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -47,6 +52,7 @@ public class UserProfileController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
         } catch (Exception e) {
+            logger.error("Error getting user profile for id: {}", userProfileSeq, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -61,6 +67,7 @@ public class UserProfileController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
         } catch (Exception e) {
+            logger.error("Error creating user profile", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -75,6 +82,7 @@ public class UserProfileController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
         } catch (Exception e) {
+            logger.error("Error updating user profile", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -85,6 +93,7 @@ public class UserProfileController {
             userProfileService.deleteUserProfile(userProfileSeq);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            logger.error("Error deleting user profile", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

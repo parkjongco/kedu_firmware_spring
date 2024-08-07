@@ -1,13 +1,8 @@
 package com.kedu.firmware.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.UUID;
 
+import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -30,78 +25,75 @@ import com.kedu.firmware.services.UserUpdateRequestesService;
 @RequestMapping("/user-update-request")
 public class UserUpdateRequestesController {
 
-    @Autowired
-    private UserUpdateRequestesService userUpdateRequestService;
+	 @Autowired
+	    private UserUpdateRequestesService userUpdateRequestesService;
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+	    // 특정 ID로 사용자 업데이트 요청을 가져오는 엔드포인트
+	    @GetMapping("/{id}")
+	    public UserUpdateRequestesDTO getUserUpdateRequestById(@PathVariable("id") Long usersUpdateRequestSeq) {
+	        return userUpdateRequestesService.getUserUpdateRequestById(usersUpdateRequestSeq);
+	    }
 
-    @GetMapping("/{id}")
-    public UserUpdateRequestesDTO getUserUpdateRequestById(@PathVariable("id") Long usersUpdateRequestSeq) {
-        return userUpdateRequestService.getUserUpdateRequestById(usersUpdateRequestSeq);
-    }
+	    // 모든 사용자 업데이트 요청을 가져오는 엔드포인트
+	    @GetMapping("/approval-list")
+	    public List<UserUpdateRequestesDTO> getAllUserUpdateRequests() {
+	        return userUpdateRequestesService.getAllUserUpdateRequests();
+	    }
 
-    @GetMapping("/approval-list")
-    public List<UserUpdateRequestesDTO> getAllUserUpdateRequests() {
-        return userUpdateRequestService.getAllUserUpdateRequests();
-    }
+	    // 새로운 사용자 업데이트 요청을 생성하는 엔드포인트
+	    @PostMapping
+	    public ResponseEntity<String> createUserUpdateRequest(
+	            @RequestBody UserUpdateRequestesDTO userUpdateRequest, 
+	            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
+	        if (userUpdateRequest.getUsersSeq() == null) {
+	            throw new IllegalArgumentException("users_seq 값이 설정되지 않았습니다.");
+	        }
+	        try {
+	            userUpdateRequestesService.createUserUpdateRequest(userUpdateRequest, profileImage);
+	            return ResponseEntity.status(HttpStatus.CREATED).body("User update request created successfully.");
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create user update request.");
+	        }
+	    }
 
-    @PostMapping
-    public void createUserUpdateRequest(@RequestBody UserUpdateRequestesDTO userUpdateRequest) {
-        if (userUpdateRequest.getUsersSeq() == null) {
-            System.out.println("Received null users_seq, setting default value or throwing exception.");
-            throw new IllegalArgumentException("users_seq 값이 설정되지 않았습니다.");
-        }
-        userUpdateRequestService.createUserUpdateRequest(userUpdateRequest);
-    }
+	    // 사용자 업데이트 요청을 수정하는 엔드포인트
+	    @PutMapping
+	    public void updateUserUpdateRequest(@RequestBody UserUpdateRequestesDTO userUpdateRequest) {
+	        if (userUpdateRequest.getUsersSeq() == null) {
+	            System.out.println("Update request received with null users_seq.");
+	            throw new IllegalArgumentException("users_seq 값이 설정되지 않았습니다.");
+	        }
+	        userUpdateRequestesService.updateUserUpdateRequest(userUpdateRequest);
+	    }
 
-    @PutMapping
-    public void updateUserUpdateRequest(@RequestBody UserUpdateRequestesDTO userUpdateRequest) {
-        if (userUpdateRequest.getUsersSeq() == null) {
-            System.out.println("Update request received with null users_seq.");
-            throw new IllegalArgumentException("users_seq 값이 설정되지 않았습니다.");
-        }
-        userUpdateRequestService.updateUserUpdateRequest(userUpdateRequest);
-    }
+	    // 사용자 업데이트 요청을 삭제하는 엔드포인트
+	    @DeleteMapping("/{id}")
+	    public void deleteUserUpdateRequest(@PathVariable("id") Long usersUpdateRequestSeq) {
+	        userUpdateRequestesService.deleteUserUpdateRequest(usersUpdateRequestSeq);
+	    }
 
-    @DeleteMapping("/{id}")
-    public void deleteUserUpdateRequest(@PathVariable("id") Long usersUpdateRequestSeq) {
-        userUpdateRequestService.deleteUserUpdateRequest(usersUpdateRequestSeq);
-    }
+	    // 사용자 업데이트 요청을 승인하는 엔드포인트
+	    @PostMapping("/approve/{id}")
+	    public void approveUserUpdateRequest(@PathVariable("id") Long usersUpdateRequestSeq) {
+	        userUpdateRequestesService.approveUserUpdateRequest(usersUpdateRequestSeq);
+	    }
 
-    // 승인 요청을 처리합니다. 사용자 정보가 실제로 업데이트됩니다.
-    @PostMapping("/approve/{id}")
-    public void approveUserUpdateRequest(@PathVariable("id") Long usersUpdateRequestSeq) {
-        userUpdateRequestService.approveUserUpdateRequest(usersUpdateRequestSeq);
-    }
+	    // 사용자 업데이트 요청을 거부하는 엔드포인트
+	    @PostMapping("/reject/{id}")
+	    public void rejectUserUpdateRequest(@PathVariable("id") Long usersUpdateRequestSeq) {
+	        userUpdateRequestesService.rejectUserUpdateRequest(usersUpdateRequestSeq);
+	    }
 
-    // 거부 요청을 처리합니다. 사용자 정보는 변경되지 않으며, 요청 상태만 "거부됨"으로 업데이트됩니다.
-    @PostMapping("/reject/{id}")
-    public void rejectUserUpdateRequest(@PathVariable("id") Long usersUpdateRequestSeq) {
-        userUpdateRequestService.rejectUserUpdateRequest(usersUpdateRequestSeq);
-    }
-
-    // 프로필 이미지 업로드 핸들러 추가
-    @PostMapping("/upload-profile-image")
-    public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile file) {
-        try {
-            // 파일 이름을 고유하게 생성합니다.
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            
-            // 업로드 경로를 설정합니다.
-            Path filePath = Paths.get(uploadDir + File.separator + fileName);
-
-            // 파일을 저장할 디렉토리가 없는 경우 생성합니다.
-            Files.createDirectories(filePath.getParent());
-
-            // 파일을 저장합니다.
-            Files.write(filePath, file.getBytes());
-
-            // 파일 경로를 반환합니다.
-            return ResponseEntity.ok(filePath.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed.");
-        }
-    }
+	    // 프로필 이미지를 업로드하는 엔드포인트
+	    @PostMapping("/upload-profile-image")
+	    public ResponseEntity<String> uploadProfileImage(@RequestParam("file") MultipartFile file) {
+	        try {
+	            String filePath = userUpdateRequestesService.saveProfileImage(file);
+	            return ResponseEntity.ok(filePath);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed.");
+	        }
+	    }
 }

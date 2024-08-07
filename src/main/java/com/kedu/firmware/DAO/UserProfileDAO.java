@@ -8,7 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 @Repository
 public class UserProfileDAO {
 
-    @Autowired
+	@Autowired
     private SqlSession mybatis;
 
     public UserProfileDTO getUserProfileByUserCode(String userCode) {
@@ -17,6 +17,10 @@ public class UserProfileDAO {
 
     public UserProfileDTO getUserProfileById(Long userProfileSeq) {
         return mybatis.selectOne("UserProfile.getUserProfileById", userProfileSeq);
+    }
+
+    public UserProfileDTO getUserProfileByUserSeq(Long userSeq) {
+        return mybatis.selectOne("UserProfile.getUserProfileByUserSeq", userSeq);
     }
 
     public Long getUserSeqByUserCode(String userCode) {
