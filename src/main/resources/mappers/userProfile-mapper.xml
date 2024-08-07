@@ -78,7 +78,7 @@
         WHERE user_profile_seq = #{userProfileSeq}
     </update>
 
-    <!-- 프로필 정보 삭제 -->
+    <!-- 프로필 정보 삭제입니다. -->
     <delete id="deleteUserProfile">
         DELETE FROM user_profile WHERE user_profile_seq = #{userProfileSeq}
     </delete>
