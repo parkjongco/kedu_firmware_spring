@@ -32,7 +32,7 @@ public class BoardDAO {
         return mybatis.update("board.updateBySeq", dto);
     }
 
-    public void incrementViewCount(int boardSeq) {
-        mybatis.update("board.incrementViewCount", boardSeq);
+    public void incrementViewCount(int board_Seq) {
+        mybatis.update("board.incrementViewCount", board_Seq);
     }
 }

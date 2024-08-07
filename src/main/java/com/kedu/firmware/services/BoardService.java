@@ -38,5 +38,4 @@ public class BoardService {
     public void incrementViewCount(int board_Seq) {
         boardDAO.incrementViewCount(board_Seq);
     }
-
 }

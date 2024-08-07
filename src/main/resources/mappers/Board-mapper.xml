@@ -36,7 +36,4 @@
         WHERE board_seq = #{board_seq}
     </update>
 
-
-
-
 </mapper>
