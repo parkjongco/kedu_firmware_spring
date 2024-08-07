@@ -1,5 +1,6 @@
 package com.kedu.firmware.controllers;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +132,8 @@ public class MailController {
 		        @RequestParam(value = "seq", required = false) Integer seq,
 		        @RequestParam(value = "query", required = false) String query,
 		        @RequestParam(value = "page", defaultValue = "1") int page, // 페이지 번호
-		        @RequestParam(value = "size", defaultValue = "10") int size // 페이지 당 메일 수
+		        @RequestParam(value = "size", defaultValue = "10") int size, // 페이지 당 메일 수
+		        @RequestParam(value = "sort", defaultValue = "date_desc") String sort // 정렬 옵션
 		) { // 모호성 문제(ambious)로 매핑을 나누지않고 같은 매핑안에서 사용해야한다. 
 
 		    // 분기점을 내부에서 만든다.
@@ -153,6 +155,25 @@ public class MailController {
 		            .collect(Collectors.toList());
 		        
 		    }
+		    
+		 // 정렬 옵션에 따른 정렬
+		    switch (sort) {
+		        case "date_asc":
+		            list.sort(Comparator.comparing(MailDTO::getMail_received_date));
+		            break;
+		        case "date_desc":
+		            list.sort((a, b) -> b.getMail_received_date().compareTo(a.getMail_received_date()));
+		            break;
+		        case "my_mails":
+		            int userSeq = usersServ.getMemberById((String) session.getAttribute("loginID")).getUsers_seq();
+		            list = list.stream()
+		                .filter(mail -> mail.getMail_sender_user_seq() == userSeq)
+		                .collect(Collectors.toList());
+		            break;
+		        default:
+		            break;
+		    }
+		    
 		    
 //		    // 검색기능 테스트 코드
 //		    System.out.println(list.size()); 
