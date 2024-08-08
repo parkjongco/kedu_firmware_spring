@@ -50,6 +50,14 @@ public class UsersDAO {
     public void deleteById(int users_seq) {
         mybatis.delete("Users.deleteUser", users_seq);
     }
+    
+    // 사용자 코드로 사용자 삭제
+    // 사용자 코드를 통해 사용자를 삭제하는 메서드
+    public void deleteByCode(String users_code) {
+        logger.info("deleteByCode 호출: users_code={}", users_code);
+        int affectedRows = mybatis.delete("Users.deleteUserByCode", users_code);
+        logger.info("deleteByCode 완료: {} 행이 삭제됨", affectedRows);
+    }
 
     // ID를 통해 사용자 조회
     public UsersDTO selectById(String id) {
@@ -65,6 +73,18 @@ public class UsersDAO {
     // 전체 사용자 정보를 조회하여 리스트로 반환
     public List<UsersDTO> getAllUsers() {
         return mybatis.selectList("Users.getAllUsers");
+    }
+    
+    // 사용자 시퀀스로 사용자 이름 조회
+    public String findUserNameBySeq(Long usersSeq) {
+        logger.info("findUserNameBySeq 호출: usersSeq={}", usersSeq);
+        String userName = mybatis.selectOne("Users.findUserNameBySeq", usersSeq);
+        if (userName == null) {
+            logger.warn("사용자 이름을 찾을 수 없습니다: usersSeq={}", usersSeq);
+        } else {
+            logger.info("사용자 이름 찾기 성공: usersSeq={}, userName={}", usersSeq, userName);
+        }
+        return userName;
     }
     
     // 유저코드로 본인의 부서 인원들의 정보를 조회
