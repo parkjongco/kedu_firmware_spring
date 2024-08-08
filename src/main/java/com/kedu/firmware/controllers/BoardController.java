@@ -2,6 +2,7 @@ package com.kedu.firmware.controllers;
 
 import com.kedu.firmware.DTO.BoardDTO;
 import com.kedu.firmware.services.BoardService;
+import com.kedu.firmware.services.Board_CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,11 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
+    @Autowired
+    private Board_CategoryService board_categoryService;
+    @Autowired
+    private Board_CategoryService board_CategoryService;
+
     //    입력
     @PostMapping
     public ResponseEntity<Void> post(@RequestBody BoardDTO dto) {
@@ -23,11 +29,19 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    //    리스트 
+    //    리스트
     @GetMapping
     public ResponseEntity<List<BoardDTO>> get() {
         List<BoardDTO> boards = boardService.getBoards();
         return ResponseEntity.ok(boards);
+    }
+
+
+    //    seq리스트
+    @GetMapping("/{seq}")
+    public ResponseEntity<List<BoardDTO>> getPostByCategory(@PathVariable int seq) {
+        List<BoardDTO> boardDTOList = board_categoryService.getPostsByCategory(seq);
+        return ResponseEntity.ok(boardDTOList);
     }
 
     @GetMapping("/detail/{seq}")
