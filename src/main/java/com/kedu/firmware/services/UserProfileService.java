@@ -92,4 +92,15 @@ public class UserProfileService {
 	            throw new IllegalArgumentException("UserProfile not found for userSeq: " + userProfile.getUserSeq());
 	        }
 	    }
+	    
+	 // 사용자 시퀀스를 기반으로 프로필을 삭제하는 메서드 추가
+	    @Transactional
+	    public void deleteUserProfileByUserSeq(Long userSeq) {
+	        UserProfileDTO userProfile = userProfileDAO.getUserProfileByUserSeq(userSeq);
+	        if (userProfile != null) {
+	            userProfileDAO.deleteUserProfile(userProfile.getUserProfileSeq());
+	        } else {
+	            throw new IllegalArgumentException("UserProfile not found for userSeq: " + userSeq);
+	        }
+	    }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,45 +15,59 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kedu.firmware.DAO.UserProfileDAO;
 import com.kedu.firmware.DAO.UserUpdateRequestesDAO;
+import com.kedu.firmware.DTO.UserProfileDTO;
 import com.kedu.firmware.DTO.UserUpdateRequestesDTO;
 
 @Service
 public class UserUpdateRequestesService {
 
-
     @Autowired
     private UserUpdateRequestesDAO userUpdateRequestesDAO;
+
+    @Autowired
+    private UserProfileDAO userProfileDAO;
+
+    @Autowired
+    private UsersService usersService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
     @Value("${server.url}")
-    private String serverUrl; // 서버의 URL을 설정 파일에서 불러오기
+    private String serverUrl;
 
     // 특정 ID로 사용자 업데이트 요청을 가져오는 메서드
     public UserUpdateRequestesDTO getUserUpdateRequestById(Long userUpdateRequestSeq) {
-        return userUpdateRequestesDAO.getUserUpdateRequestById(userUpdateRequestSeq);
+        UserUpdateRequestesDTO request = userUpdateRequestesDAO.getUserUpdateRequestById(userUpdateRequestSeq);
+        if (request != null) {
+            String userName = usersService.getUserNameBySeq(request.getUsersSeq());
+            request.setUserName(userName);  // 사용자 이름 설정
+        }
+        return request;
     }
 
     // 모든 사용자 업데이트 요청을 가져오는 메서드
     public List<UserUpdateRequestesDTO> getAllUserUpdateRequests() {
-        return userUpdateRequestesDAO.getAllUserUpdateRequests();
+        List<UserUpdateRequestesDTO> requests = userUpdateRequestesDAO.getAllUserUpdateRequests();
+        for (UserUpdateRequestesDTO request : requests) {
+            String userName = usersService.getUserNameBySeq(request.getUsersSeq());
+            request.setUserName(userName);  // 사용자 이름 설정
+        }
+        return requests;
     }
 
     // 사용자 업데이트 요청을 생성하는 메서드
     @Transactional
     public void createUserUpdateRequest(UserUpdateRequestesDTO userUpdateRequest, MultipartFile profileImage) throws IOException {
-        // 프로필 이미지가 있다면 저장하고 경로를 설정
         if (profileImage != null && !profileImage.isEmpty()) {
             String profileImageUrl = saveProfileImage(profileImage);
             userUpdateRequest.setProfileImage(profileImageUrl);
         }
 
-        // 기존 요청이 있는지 확인
         UserUpdateRequestesDTO existingRequest = userUpdateRequestesDAO.getUserUpdateRequestByUserSeq(userUpdateRequest.getUsersSeq());
         if (existingRequest != null) {
-            // 기존 요청이 있으면 업데이트
             existingRequest.setPhoneNumber(userUpdateRequest.getPhoneNumber());
             existingRequest.setEmail(userUpdateRequest.getEmail());
             existingRequest.setAddress(userUpdateRequest.getAddress());
@@ -69,7 +84,6 @@ public class UserUpdateRequestesService {
 
             userUpdateRequestesDAO.updateUserUpdateRequest(existingRequest);
         } else {
-            // 새로운 요청을 생성
             userUpdateRequestesDAO.insertUserUpdateRequest(userUpdateRequest);
         }
     }
@@ -92,6 +106,16 @@ public class UserUpdateRequestesService {
         UserUpdateRequestesDTO request = userUpdateRequestesDAO.getUserUpdateRequestById(userUpdateRequestSeq);
         if (request != null) {
             request.setRequestStatus("승인됨");
+
+            UserProfileDTO userProfile = request.toUserProfileDTO();
+            UserProfileDTO existingProfile = userProfileDAO.getUserProfileByUserSeq(request.getUsersSeq());
+            if (existingProfile != null) {
+                userProfile.setUserProfileSeq(existingProfile.getUserProfileSeq());
+                userProfileDAO.updateUserProfile(userProfile);
+            } else {
+                userProfileDAO.insertUserProfile(userProfile);
+            }
+
             userUpdateRequestesDAO.updateUserUpdateRequest(request);
         } else {
             throw new IllegalArgumentException("Invalid request ID: " + userUpdateRequestSeq);
@@ -105,6 +129,27 @@ public class UserUpdateRequestesService {
         if (request != null) {
             request.setRequestStatus("거부됨");
             userUpdateRequestesDAO.updateUserUpdateRequest(request);
+
+            // 이전 승인된 프로필로 롤백
+            UserProfileDTO approvedProfile = userProfileDAO.getUserProfileByUserSeq(request.getUsersSeq());
+            if (approvedProfile != null) {
+                request.setPhoneNumber(approvedProfile.getPhoneNumber());
+                request.setEmail(approvedProfile.getEmail() != null ? approvedProfile.getEmail() : request.getEmail());
+                request.setAddress(approvedProfile.getAddress());
+                request.setZipCode(approvedProfile.getZipCode());
+                request.setDetailedAddress(approvedProfile.getDetailedAddress());
+                request.setProfileImage(approvedProfile.getProfilePictureUrl());
+                request.setRank(approvedProfile.getRank());
+                request.setEmployeeId(approvedProfile.getEmployeeId());
+
+                if (approvedProfile.getJoinDate() != null) {
+                    request.setJoinDate(new Timestamp(approvedProfile.getJoinDate().getTime()));
+                } else {
+                    request.setJoinDate(null);
+                }
+
+                userUpdateRequestesDAO.updateUserUpdateRequest(request);
+            }
         } else {
             throw new IllegalArgumentException("Invalid request ID: " + userUpdateRequestSeq);
         }
@@ -112,24 +157,12 @@ public class UserUpdateRequestesService {
 
     // 프로필 이미지를 저장하고 웹 경로를 반환하는 메서드
     public String saveProfileImage(MultipartFile file) throws IOException {
-        // 파일 이름 생성 (UUID와 원본 파일 이름 결합)
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-        // 파일 경로 생성
         Path filePath = Paths.get(uploadDir + File.separator + fileName);
 
-        // 디버깅 로그 추가
-        System.out.println("파일 경로: " + filePath.toString());
-
-        // 디렉토리가 없으면 생성
         Files.createDirectories(filePath.getParent());
-        // 파일 쓰기
         Files.write(filePath, file.getBytes());
 
-        String profileImageUrl = serverUrl + "/uploads/" + fileName;
-        // 경로 로그 추가
-        System.out.println("프로필 이미지 URL: " + profileImageUrl);
-
-        // 웹 브라우저에서 접근 가능한 경로로 반환
-        return profileImageUrl;
+        return serverUrl + "/uploads/" + fileName;
     }
 }
