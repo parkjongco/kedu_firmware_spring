@@ -156,6 +156,13 @@ public class UsersService {
         }
     }
     
+    
+    // 사용자 시퀀스를 통해 사용자 이름 조회
+    public String getUserNameBySeq(Long usersSeq) {
+        return usersDAO.findUserNameBySeq(usersSeq);
+    }
+    
+    
     // 로그인ID(유저 코드)로 부서내 인원들의 정보(이메일, 이름)를 가져옴
     // 본인의 유저코드를 잘라서 사용해 유사 부서에 있는 인원들의 정보를 찾아오고 본인의 정보는 제외함
     public List<Map<String, String>> getDepartmentMemberInfoByLoginID(String loginID){

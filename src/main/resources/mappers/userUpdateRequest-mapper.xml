@@ -102,4 +102,5 @@
         DELETE FROM users_update_requests WHERE users_update_request_seq = #{usersUpdateRequestSeq,jdbcType=NUMERIC}
     </delete>
 
+
 </mapper>
