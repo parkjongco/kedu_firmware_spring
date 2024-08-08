@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kedu.firmware.DAO.DepartmentDAO;
 import com.kedu.firmware.DAO.EmployeeDAO;
 import com.kedu.firmware.DAO.UnitDAO;
+import com.kedu.firmware.DAO.UserProfileDAO;
+import com.kedu.firmware.DAO.UserUpdateRequestesDAO;
 import com.kedu.firmware.DAO.UsersDAO;
 import com.kedu.firmware.DTO.DepartmentDTO;
 import com.kedu.firmware.DTO.UnitDTO;
@@ -32,6 +34,16 @@ public class UsersService {
     
     @Autowired
     private EmployeeDAO employeeDAO;
+    
+    @Autowired
+    private UserUpdateRequestesDAO userUpdateRequestesDAO;
+    
+    @Autowired
+    private UserProfileDAO userProfileDAO; 
+    
+    @Autowired
+    private UserProfileService userProfileService;
+    
 
     private static final Logger logger = LoggerFactory.getLogger(UsersService.class);
 
@@ -145,17 +157,21 @@ public class UsersService {
     
     // 사용자 코드로 사용자 삭제
     // 사용자 코드를 통해 사용자를 삭제하는 메서드
+ // UsersService 클래스 내에서
     @Transactional
     public void deleteUserByCode(String users_code) {
         UsersDTO user = usersDAO.findUserByCode(users_code);
         if (user != null) {
-            // 해당 사용자의 관련된 employee 레코드를 삭제
+            // 사용자와 관련된 레코드들 먼저 삭제
+            userUpdateRequestesDAO.deleteUserUpdateRequestsByUserSeq(user.getUsers_seq().longValue()); // 여기서 Integer를 Long으로 변환
+            userProfileService.deleteUserProfileByUserSeq(user.getUsers_seq().longValue()); // 여기서 Integer를 Long으로 변환
             employeeDAO.deleteByUserSeq(user.getUsers_seq());
+
             // 이후 사용자 레코드 삭제
             usersDAO.deleteByCode(users_code);
         }
     }
-    
+
     
     // 사용자 시퀀스를 통해 사용자 이름 조회
     public String getUserNameBySeq(Long usersSeq) {

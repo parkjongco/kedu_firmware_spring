@@ -97,5 +97,18 @@ public class UserProfileController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    
+    // 사용자 시퀀스를 기반으로 프로필을 삭제하는 엔드포인트 추가
+    @DeleteMapping("/userSeq/{userSeq}")
+    public ResponseEntity<Void> deleteUserProfileByUserSeq(@PathVariable("userSeq") Long userSeq) {
+        try {
+            userProfileService.deleteUserProfileByUserSeq(userSeq);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            logger.error("Error deleting user profile for userSeq: {}", userSeq, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
 

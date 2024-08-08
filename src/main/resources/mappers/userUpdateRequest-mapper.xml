@@ -97,10 +97,14 @@
         WHERE users_update_request_seq = #{usersUpdateRequestSeq,jdbcType=NUMERIC}
     </update>
 
-    <!-- 사용자 업데이트 요청 삭제 -->
+    <!-- 특정 사용자 업데이트 요청을 삭제하는 메서드 -->
     <delete id="deleteUserUpdateRequest">
         DELETE FROM users_update_requests WHERE users_update_request_seq = #{usersUpdateRequestSeq,jdbcType=NUMERIC}
     </delete>
 
+    <!-- 추가된 메서드: 특정 사용자 시퀀스로 모든 사용자 업데이트 요청을 삭제 -->
+    <delete id="deleteUserUpdateRequestsByUserSeq">
+        DELETE FROM users_update_requests WHERE users_seq = #{usersSeq,jdbcType=NUMERIC}
+    </delete>
 
 </mapper>
