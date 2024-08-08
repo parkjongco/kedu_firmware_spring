@@ -1,0 +1,20 @@
+<mapper namespace="bookmark">
+
+    <insert id="insert">
+        INSERT INTO bookmark (bookmark_seq, user_seq, board_seq)
+        VALUES (bookmark_seq.nextval, #{userSeq}, #{boardSeq})
+    </insert>
+
+    <select id="getBookmarksByUsername" resultType="com.kedu.firmware.DTO.BookmarkDTO">
+        SELECT * FROM bookmark WHERE user_seq = (SELECT user_seq FROM users WHERE username = #{username})
+    </select>
+
+    <delete id="delete">
+        DELETE FROM bookmark WHERE bookmark_seq = #{bookmark_seq}
+    </delete>
+
+<!--    <select id="checkBookmark" resultType="int">-->
+<!--        SELECT COUNT(*) FROM bookmark WHERE user_seq = #{user_Seq} AND board_seq = #{board_Seq}-->
+<!--    </select>-->
+
+</mapper>
