@@ -5,32 +5,35 @@ import java.sql.Timestamp;
 
 public class UserUpdateRequestesDTO {
 
-    private Long usersUpdateRequestSeq;
-    private Long usersSeq;
-    private String phoneNumber;
-    private String email;
-    private String address;
-    private String zipCode;
-    private String detailedAddress;
-    private String requestReason;
-    private String requestStatus;
+	private Long usersUpdateRequestSeq; // 사용자 업데이트 요청 시퀀스
+    private Long usersSeq;              // 사용자 시퀀스
+    private String phoneNumber;         // 전화번호
+    private String email;               // 이메일
+    private String address;             // 주소
+    private String zipCode;             // 우편번호
+    private String detailedAddress;     // 상세 주소
+    private String requestReason;       // 요청 사유
+    private String requestStatus;       // 요청 상태
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp requestTimestamp;
+    private Timestamp requestTimestamp; // 요청 타임스탬프
 
-    private String profileImage;   // 추가된 필드
-    private String rank;           // 추가된 필드
-    private String employeeId;     // 추가된 필드
+    private String profileImage;        // 프로필 이미지 URL
+    private String rank;                // 직급
+    private String employeeId;          // 직원 ID
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp joinDate;    // 추가된 필드
+    private Timestamp joinDate;         // 입사일
     
-    private String approver;       // 추가된 필드
+    private String approver;            // 승인자
+    private String userName;            // 사용자 이름 (추가 필드)
 
+    // 기본 생성자
     public UserUpdateRequestesDTO() {
         super();
     }
 
+    // 매개변수가 있는 생성자
     public UserUpdateRequestesDTO(Long usersUpdateRequestSeq, Long usersSeq, String phoneNumber, String email,
                                 String address, String zipCode, String detailedAddress, String requestReason, 
                                 String requestStatus, Timestamp requestTimestamp, String profileImage, 
@@ -53,7 +56,8 @@ public class UserUpdateRequestesDTO {
         this.approver = approver;
     }
 
-    // Getters and Setters
+    // Getter 및 Setter 메서드
+
     public Long getUsersUpdateRequestSeq() {
         return usersUpdateRequestSeq;
     }
@@ -172,5 +176,29 @@ public class UserUpdateRequestesDTO {
 
     public void setApprover(String approver) {
         this.approver = approver;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    // UserProfileDTO로 변환하는 메서드
+    public UserProfileDTO toUserProfileDTO() {
+        UserProfileDTO userProfile = new UserProfileDTO();
+        userProfile.setUserSeq(this.usersSeq);
+        userProfile.setPhoneNumber(this.phoneNumber);
+        userProfile.setEmail(this.email);
+        userProfile.setAddress(this.address);
+        userProfile.setZipCode(this.zipCode);
+        userProfile.setDetailedAddress(this.detailedAddress);
+        userProfile.setProfilePictureUrl(this.profileImage);
+        userProfile.setRank(this.rank);
+        userProfile.setEmployeeId(this.employeeId);
+        userProfile.setJoinDate(this.joinDate);
+        return userProfile;
     }
 }

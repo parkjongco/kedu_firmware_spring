@@ -57,5 +57,10 @@
     <delete id="deleteEmployee" parameterType="int">
         DELETE FROM employee WHERE employee_seq = #{employee_seq}
     </delete>
+    
+    <!-- 특정 사용자 시퀀스를 기반으로 직원 레코드를 삭제하는 쿼리 -->
+    <delete id="deleteByUserSeq" parameterType="int">
+        DELETE FROM employee WHERE user_seq = #{user_seq}
+    </delete>
 
 </mapper>
