@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Attendance">
+
+	 <insert id="insertCheckInTime" parameterType="com.kedu.firmware.DTO.AttendanceDTO">
+    INSERT INTO attendance (
+        attendance_id, 
+        users_seq, 
+        attendance_date, 
+        check_in_time, 
+        check_out_time, 
+        status
+    ) VALUES (
+        attendance_seq.nextval, 
+        #{users_seq}, 
+        sysdate, 
+        #{check_in_time},
+        NULL,
+        '출근'
+    )
+  </insert>
+
+
+	<update id="insertCheckOutTime">
+		<!-- 출석 기록의 퇴근 시간 업데이트 -->
+		update attendance 
+		set check_out_time = #{check_out_time},
+		status = '퇴근' 
+		where 
+			TRUNC(attendance_date) = TRUNC(sysdate)
+			and users_seq = #{users_seq}
+	</update>
+	
+	<select id="checkIfAlreadyCheckedIn" parameterType="int" resultType="com.kedu.firmware.DTO.AttendanceDTO">
+		select check_in_time, check_out_time
+		from attendance
+		where users_seq = #{users_seq}
+		and TRUNC(attendance_date) = TRUNC(sysdate)
+	</select>
+	
+	<select id="getAttendanceEvents" parameterType="map" resultType="com.kedu.firmware.DTO.AttendanceDTO">
+        SELECT 
+            *
+        FROM attendance
+        WHERE users_seq = #{usersSeq}
+          AND attendance_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+        ORDER BY attendance_date
+    </select>
+	
+	
+</mapper>
