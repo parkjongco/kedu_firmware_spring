@@ -1,6 +1,10 @@
 package com.kedu.firmware.controllers;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +63,7 @@ public class AttendanceController {
     }
     
     
+    // 근태관리 event 출력 처리
     @GetMapping("/events")
     public ResponseEntity<List<AttendanceDTO>> getAttendanceEvents(
             @RequestParam("users_seq") int usersSeq,
@@ -66,32 +71,107 @@ public class AttendanceController {
             @RequestParam("end_date") String endDate) {
         List<AttendanceDTO> events = attendanceServ.getAttendanceEvents(usersSeq, startDate, endDate);
         
-        for (AttendanceDTO event : events) {
-            System.out.println("Attendance ID: " + event.getAttendance_id());
-            System.out.println("User Seq: " + event.getUsers_seq());
-            System.out.println("Attendance Date: " + event.getAttendance_date());
-            System.out.println("Check-In Time: " + event.getCheck_in_time());
-            System.out.println("Check-Out Time: " + event.getCheck_out_time());
-            System.out.println("Status: " + event.getStatus());
-            System.out.println("-------------------------------");
-        }
+        //event 제대로 가져와지는지 확인을 위한 테스트 코드
+//        for (AttendanceDTO event : events) {
+//            System.out.println("Attendance ID: " + event.getAttendance_id());
+//            System.out.println("User Seq: " + event.getUsers_seq());
+//            System.out.println("Attendance Date: " + event.getAttendance_date());
+//            System.out.println("Check-In Time: " + event.getCheck_in_time());
+//            System.out.println("Check-Out Time: " + event.getCheck_out_time());
+//            System.out.println("Status: " + event.getStatus());
+//            System.out.println("-------------------------------");
+//        }
         
         return ResponseEntity.ok(events);
     }
     
-    
+    // 출석 결석 시간 가져오기위한 get
     @GetMapping("/check")
     public ResponseEntity<Map<String, Object>> checkAttendanceStatus(@RequestParam("users_seq") int usersSeq) {
         AttendanceDTO attendance = attendanceServ.checkIfAlreadyCheckedIn(usersSeq);
         
         Map<String, Object> response = new HashMap<>();
-        response.put("checkIn", attendance.getCheck_in_time());
-        response.put("checkOut", attendance.getCheck_out_time());
-        
+        if (attendance != null) {
+            response.put("checkIn", attendance.getCheck_in_time());
+            response.put("checkOut", attendance.getCheck_out_time());
+        } else {
+            response.put("message", "No attendance record found.");
+        }        
         return ResponseEntity.ok(response);
     }
     
     
+ // 근태 정보 출력
+    @GetMapping("/checkAttendanceSummary")
+    public ResponseEntity<Map<String, Object>> getAttendanceSummary(
+        @RequestParam("usersSeq") int usersSeq, // 자바 컨벤션에 맞게 usersSeq로 수정
+        @RequestParam("month") String month) {
+
+        // 해당 월의 시작일과 종료일 계산
+        YearMonth yearMonth = YearMonth.parse(month); // YYYY-MM 형식으로 들어온 month를 파싱
+        LocalDate startDate = yearMonth.atDay(1); // 월의 첫날
+        LocalDate endDate = yearMonth.atEndOfMonth(); // 월의 마지막 날
+        System.out.println("Month: " + month);
+
+        // 서비스 레이어에서 데이터를 가져옴
+        List<AttendanceDTO> monthlyRecords = attendanceServ.getMonthlyAttendance(usersSeq, startDate.toString(), endDate.toString());
+        System.out.println("Monthly Records Size: " + monthlyRecords.size());
+
+        // 요약 데이터를 담을 맵을 준비
+        Map<String, Object> summary = new HashMap<>();
+        int daysPresent = 0;
+        int daysLate = 0;
+        int daysAbsent = 0;
+        int earlyLeave = 0;
+
+        // 해당 월의 모든 날짜에 대해 출석 기록을 체크
+        for (int day = 1; day <= endDate.getDayOfMonth(); day++) { // 실제 월의 마지막 날까지만 반복
+            LocalDate currentDate = yearMonth.atDay(day);
+            boolean isAbsent = true;
+
+            for (AttendanceDTO record : monthlyRecords) {
+                LocalDate recordDate = record.getAttendance_date().toLocalDate();
+
+                if (recordDate.equals(currentDate)) {
+                    isAbsent = false;
+
+                    // 정상 퇴근한 날만 출석 일수에 포함
+                    if (record.getStatus().equalsIgnoreCase("퇴근")) {
+                        daysPresent++;
+                    }
+
+                    // 조퇴 일수 증가
+                    if (record.getStatus().equalsIgnoreCase("조퇴")) {
+                        earlyLeave++;
+                    }
+
+                    // 지각 처리
+                    if (record.getCheck_in_time() != null) {
+                        LocalDateTime checkInDateTime = record.getCheck_in_time().toLocalDateTime();
+                        LocalTime checkInTime = checkInDateTime.toLocalTime();
+
+                        if (checkInTime.isAfter(LocalTime.of(9, 10))) {
+                            daysLate++;
+                        }
+                    }
+                }
+            }
+
+            // 결근 처리: 해당 날짜에 출석 기록이 없으면 결근으로 간주
+            if (isAbsent) {
+                daysAbsent++;
+            }
+        }
+
+        summary.put("daysPresent", daysPresent); // 출석 일수 (정상 퇴근한 날만 포함)
+        summary.put("daysLate", daysLate); // 지각 일수
+        summary.put("daysAbsent", daysAbsent); // 결근 일수
+        summary.put("earlyLeave", earlyLeave); // 조퇴 일수
+
+        return ResponseEntity.ok(summary);
+    }
+
+
     
     
 }

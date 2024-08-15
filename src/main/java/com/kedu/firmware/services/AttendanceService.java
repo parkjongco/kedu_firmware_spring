@@ -29,6 +29,8 @@ public class AttendanceService {
 	public List<AttendanceDTO> getAttendanceEvents(int usersSeq, String startDate, String endDate) {
         return attendancedao.getAttendanceEvents(usersSeq, startDate, endDate);
     }
-	
-	
+
+	public List<AttendanceDTO> getMonthlyAttendance(int usersSeq, String startDate, String endDate) {
+	    return attendancedao.getMonthlyAttendance(usersSeq, startDate, endDate);
+	}
 }

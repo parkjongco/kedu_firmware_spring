@@ -25,14 +25,22 @@
 
 
 	<update id="insertCheckOutTime">
-		<!-- 출석 기록의 퇴근 시간 업데이트 -->
-		update attendance 
-		set check_out_time = #{check_out_time},
-		status = '퇴근' 
-		where 
-			TRUNC(attendance_date) = TRUNC(sysdate)
-			and users_seq = #{users_seq}
-	</update>
+    <!-- 출석 기록의 퇴근 시간 업데이트 -->
+	    update attendance 
+	    set 
+	        check_out_time = #{check_out_time},
+	        <!-- xml 파서가 잘못 해석하지않도록 CDATA로 감싸서 파서 오류 해결 -->
+	        status = <![CDATA[
+	            CASE 
+	                WHEN TO_CHAR(#{check_out_time}, 'HH24:MI') <= '18:00' THEN '조퇴' 
+	                ELSE '퇴근' 
+	            END
+	        ]]>
+	    where 
+	        TRUNC(attendance_date) = TRUNC(sysdate)
+	        and users_seq = #{users_seq}
+	  </update>
+
 	
 	<select id="checkIfAlreadyCheckedIn" parameterType="int" resultType="com.kedu.firmware.DTO.AttendanceDTO">
 		select check_in_time, check_out_time
@@ -49,6 +57,17 @@
           AND attendance_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
         ORDER BY attendance_date
     </select>
-	
+
+	<!-- 선택된 달의 근태 정보를 가져오기위한 쿼리문 -->
+	<!-- 특정 달의 모든 출석 정보를 가져온다 -->
+	<select id="getMonthlyAttendance" parameterType="map" resultType="com.kedu.firmware.DTO.AttendanceDTO">
+	    SELECT *
+	    FROM attendance
+	    WHERE users_seq = #{usersSeq}
+	    AND attendance_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	    ORDER BY attendance_date
+	</select>
+
+		
 	
 </mapper>
