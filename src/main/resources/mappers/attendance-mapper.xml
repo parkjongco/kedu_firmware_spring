@@ -68,6 +68,22 @@
 	    ORDER BY attendance_date
 	</select>
 
+	<!-- 부서 일정 반환을 위한 쿼리 -->
+	<select id="findAttendanceEventsByDepartment" resultType="com.kedu.firmware.DTO.AttendanceDTO">
+    SELECT a.* 
+    FROM attendance a
+    JOIN users u ON a.users_seq = u.users_seq
+    WHERE u.department_code = (
+        SELECT department_code 
+        FROM users 
+        WHERE users_seq = #{usersSeq}
+    )
+    AND TRUNC(a.attendance_date) = TO_DATE(#{date}, 'YY/MM/DD')
+</select>
+
+
+
+
 		
 	
 </mapper>

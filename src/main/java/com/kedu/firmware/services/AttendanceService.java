@@ -33,4 +33,10 @@ public class AttendanceService {
 	public List<AttendanceDTO> getMonthlyAttendance(int usersSeq, String startDate, String endDate) {
 	    return attendancedao.getMonthlyAttendance(usersSeq, startDate, endDate);
 	}
+	
+	// 특정 사용자의 특정 날짜에 대한 이벤트를 조회하는 메서드
+    public List<AttendanceDTO> getDepartmentEventsForDate(int usersSeq, String date) {
+        return attendancedao.findEventsByUserSeqAndDate(usersSeq, date);
+    }
+
 }

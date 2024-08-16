@@ -49,5 +49,13 @@ public class AttendanceDAO {
 	    params.put("endDate", endDate);
 	    return mybatis.selectList("Attendance.getMonthlyAttendance", params);
 	}
+	
+	public List<AttendanceDTO> findEventsByUserSeqAndDate(int usersSeq, String date) {
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("usersSeq", usersSeq);
+	    params.put("date", date);
+
+	    return mybatis.selectList("Attendance.findAttendanceEventsByDepartment", params);
+	}
 
 }

@@ -85,5 +85,11 @@ public class UsersDAO {
     	return mybatis.selectOne("Users.selectUserByEmail", Email);
 
     }
+ 
+    // 부서 내 모든 구성원 정보를 조회하는 메서드 (프로필 포함)
+    public List<Map<String, Object>> findDepartmentInfoWithProfile(String departmentPrefix, String excludeLoginID) {
+        return mybatis.selectList("Users.findDepartmentInfoWithProfileByUserCode", 
+            Map.of("departmentPrefix", departmentPrefix, "excludeLoginID", excludeLoginID));
+    }
     
 }

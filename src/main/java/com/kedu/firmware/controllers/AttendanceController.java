@@ -172,6 +172,29 @@ public class AttendanceController {
     }
 
 
+    // 근태관리 event 출력 처리 (하루 일정 조회)
+    @GetMapping("/departmentEvents")
+    public ResponseEntity<List<AttendanceDTO>> getDepartmentEvents(
+            @RequestParam("users_seq") int usersSeq,  
+            @RequestParam("date") String date) { 
+
+        // 클라이언트에서 받은 날짜를 "yyyy-MM-dd" 형식으로 파싱한 후 "yy/MM/dd" 형식으로 변환
+        String formattedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                                        .format(DateTimeFormatter.ofPattern("yy/MM/dd"));
+        System.out.println("파싱된 시간은" + formattedDate);
+        // 변환된 날짜를 사용하여 서비스 호출
+        List<AttendanceDTO> events = attendanceServ.getDepartmentEventsForDate(usersSeq, formattedDate);
+
+        if (events.isEmpty()) {
+            System.out.println("부서 인원들의 일정 없음");
+            return ResponseEntity.noContent().build();  
+        }
+        return ResponseEntity.ok(events);  
+    }
+
+
+
+    
     
     
 }

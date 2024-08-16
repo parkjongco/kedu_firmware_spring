@@ -94,4 +94,18 @@ public class UsersController {
     	
     }
     
+    @GetMapping("/{loginID}/deptprofile")
+    public ResponseEntity<List<Map<String, Object>>> getDepartmentMemberInfoWithProfile(@PathVariable String loginID) {
+    	// loginID에서 departmentPrefix를 추출
+        String departmentPrefix = loginID.split("-")[0];  // 기존 방식과 동일하게 처리
+        System.out.println("departmentPrefix: " + departmentPrefix);
+        System.out.println("excludeLoginID: " + loginID);
+        List<Map<String, Object>> info = usersService.getDepartmentMemberInfoWithProfile(loginID, departmentPrefix);
+        System.out.println(info);
+        if (info.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(info);
+    }    
+    
 }

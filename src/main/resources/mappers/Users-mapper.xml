@@ -99,4 +99,38 @@
 		select * from users where users_email = #{Email}
 	</select>
 	
+	<!-- 해당하는 유저와 같은 부서 인원들의 모든 정보를 불러옴(프로필 포함) -->
+	<select id="findDepartmentInfoWithProfileByUserCode" resultType="map">
+	    SELECT 
+	        u.users_seq AS usersSeq, 
+	        u.users_code AS usersCode, 
+	        u.users_name AS usersName, 
+	        u.users_password AS usersPassword, 
+	        u.users_email AS usersEmail, 
+	        u.users_full_name AS usersFullName, 
+	        u.department_code AS departmentCode, 
+	        u.unit_code AS unitCode, 
+	        TO_CHAR(u.users_created_at, 'YYYY-MM-DD HH24:MI:SS') AS usersCreatedAt, 
+	        TO_CHAR(u.users_updated_at, 'YYYY-MM-DD HH24:MI:SS') AS usersUpdatedAt, 
+	        u.users_is_admin AS usersIsAdmin,
+	        p.phone_number AS phoneNumber,
+	        p.address AS address,
+	        p.zip_code AS zipCode,
+	        p.detailed_address AS detailedAddress,
+	        p.profile_picture_url AS profilePictureUrl,
+	        p.rank AS rank,
+	        p.employee_id AS employeeId,
+	        p.join_date AS joinDate,
+	        p.email AS profileEmail
+	    FROM 
+	        users u
+	    LEFT JOIN 
+	        user_profile p ON u.users_seq = p.user_seq
+	    WHERE 
+	        u.users_code LIKE #{departmentPrefix} || '%'
+	        AND u.users_code != #{excludeLoginID}
+	</select>
+
+
+	
 </mapper>
