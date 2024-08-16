@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kedu.firmware.DTO.MailCarbonCopyDTO;
 import com.kedu.firmware.DTO.MailDTO;
 import com.kedu.firmware.DTO.UsersDTO;
+import com.kedu.firmware.services.MailAttachmentService;
 import com.kedu.firmware.services.MailCarbonCopyService;
 import com.kedu.firmware.services.MailService;
 import com.kedu.firmware.services.UsersService;
@@ -41,6 +42,9 @@ public class MailController {
 	
 	@Autowired
 	private MailCarbonCopyService mailCarbonCopyServ;
+	
+	@Autowired
+	private MailAttachmentService mailAttachmentServ;
 	
 	@Autowired
     private HttpSession session;
@@ -64,16 +68,7 @@ public class MailController {
 	            @RequestParam(value = "replyToMailId", required = false) Integer replyToMailId) {
 			System.out.println("첨부파일 있는지 확인 중");
 			try {
-	            // 첨부 파일 처리
-				if (attachments != null) {
-		            for (MultipartFile file : attachments) {
-		                if (!file.isEmpty()) { //첨부된 파일이 있다면 파일을 저장
-		                    String fileName = file.getOriginalFilename();
-		                    // 파일 저장 시점 fileServ를 불러와야 할 것이다.
-		                    System.out.println("Received file: " + fileName);
-		                }
-		            }
-				}
+	            
 	            // 메일 데이터 전송 시점
 	            // 보낸이 받고
 	            // 보내는 이는 일단 임의의 값 집어넣어서 테스트
@@ -93,6 +88,7 @@ public class MailController {
 	            UsersDTO usersdto = usersServ.getMemberById(user_code);
 	            int loginID = usersdto.getUsers_seq();
 	            
+	            int mail_seq;
 	            if (replyToMailId != null) {
 	            	//회신 메일 처리
 	            	System.out.println("회신하고자하는 메일의 ID " + replyToMailId);
@@ -101,7 +97,7 @@ public class MailController {
 	            	MailDTO maildto = new MailDTO(0, loginID, replyToMailId, subject, message, null, null, null, 'N', 'N', 'Y');
 	            	mailServ.replyMail(maildto);
 	            	// 이 시점에서 새로 보낸 메일의 seq가 반환되어 mail_carbon_copy_seq에 들어간다
-	            	int mail_seq = maildto.getMail_seq();
+	            	mail_seq = maildto.getMail_seq();
 	            	System.out.println("carbon에들어갈 seq" + mail_seq);
 	            	System.out.println(to);
 	            	mailCarbonCopyServ.saveMailRecipient(new MailCarbonCopyDTO(0,to,mail_seq,0,0,"reply","Y"));
@@ -111,12 +107,24 @@ public class MailController {
 	            	MailDTO maildto = new MailDTO(0,loginID,0,subject,message,null,null,null,'N','N','Y');
 	            	mailServ.insertMail(maildto);
 	            	// 이 시점에서 새로 보낸 메일의 seq가 반환되어 mail_carbon_copy_seq에 들어간다
-	            	int mail_seq = maildto.getMail_seq();
+	            	mail_seq = maildto.getMail_seq();
 	            	System.out.println("carbon에들어갈 seq" + mail_seq);
 	            	System.out.println(to);
 	            	mailCarbonCopyServ.saveMailRecipient(new MailCarbonCopyDTO(0,to,mail_seq,0,0,"send","Y"));
 	            	
 	            }
+	            
+	         // 첨부 파일 처리
+				if (attachments != null) {
+		            for (MultipartFile file : attachments) {
+		                if (!file.isEmpty()) { //첨부된 파일이 있다면 파일을 저장
+//		                    String fileName = file.getOriginalFilename();
+//		                    System.out.println("Received file: " + fileName);
+		                	
+		                	mailAttachmentServ.saveAttachment(mail_seq, file);
+		                }
+		            }
+				}
 	            
 	            return ResponseEntity.ok("메일이 성공적으로 전송되었습니다.");
 	        } catch (Exception e) {
@@ -138,10 +146,14 @@ public class MailController {
 
 		    // 분기점을 내부에서 만든다.
 		    // 사용자가 메일함 목록 선택했을때, 해당 메일함의 메일들이 출력
-		    if(seq != null) {
-		        System.out.println("seq 반환");
-		        return ResponseEntity.ok(Map.of("mails", mailServ.selectByMailSeq(seq), "total", 1));
-		    } 
+			if (seq != null) {
+	            System.out.println("seq 반환");
+	            Map<String, Object> result = new HashMap<>();
+	            result.put("mails", mailServ.selectByMailSeq(seq));
+	            result.put("attachments", mailAttachmentServ.getAttachmentsByMailSeq(seq));
+//	            result.put("total", 1);
+	            return ResponseEntity.ok(result);
+	        }
 
 		    // 메일 리스트반환
 		    // 메일함 목록을 보여주어야하기때문에 각 메일함에서 첫번째로 작성된 메일들만 출력해야한다.

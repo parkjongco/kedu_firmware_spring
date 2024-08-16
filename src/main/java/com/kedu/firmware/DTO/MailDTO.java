@@ -19,7 +19,7 @@ public class MailDTO {
 	private char mail_sent_status;
 
 	//--------메일 보낸 사람 받아오기위한 DTO 추가 내용----------
-	 //추가된 변수(Mail 테이블에는 해당 칼럼 없음)
+	 //(Mail 테이블에는 해당 칼럼 없음)
 	private String sender_name; // 발신자 이름
 	private String sender_email; // 발신자 이메일
 	private String sender_department_name; // 발신자 부서 이름
@@ -29,7 +29,20 @@ public class MailDTO {
 	private String receiver_department_name;
 	private String copyType;	// 회신 or 수신 타입 구분을 위한 칼럼
 	
+	//---각 메일에 첨부파일이 있는지 여부를 판단하기위한 DTO 추가 내용
 	
+	private boolean has_attachments;
+
+    public boolean isHas_attachments() {
+        return has_attachments;
+    }
+
+    public void setHas_attachments(boolean has_attachments) {
+        this.has_attachments = has_attachments;
+    }
+
+	
+	//
 	public MailDTO(int mail_seq, int mail_sender_user_seq, int mailbox_seq, String mail_title, String mail_content,
 			Timestamp mail_send_date, Timestamp mail_received_date, Timestamp mail_deleted_date, char mail_read_status,
 			char mail_deleted_status, char mail_sent_status, String sender_name, String sender_email,
