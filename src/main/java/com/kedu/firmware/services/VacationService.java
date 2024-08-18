@@ -1,0 +1,107 @@
+package com.kedu.firmware.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.kedu.firmware.DAO.VacationDAO;
+import com.kedu.firmware.DTO.AnnualVacationManagementDTO;
+import com.kedu.firmware.DTO.VacationApplicationDTO;
+
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+@Service
+public class VacationService {
+
+    @Autowired
+    private VacationDAO vacationDAO;
+
+    // 해당 사용자가 이미 연차를 부여받았는지 확인
+    public boolean hasVacation(int usersSeq) {
+        AnnualVacationManagementDTO vacationInfo = vacationDAO.getAnnualVacationInfo(usersSeq);
+        if (vacationInfo == null) {
+            System.out.println("연차 정보가 없습니다. usersSeq: " + usersSeq);
+            return false;
+        }
+        boolean hasVacation = vacationInfo.getRemain_annual_vacation_days() > 0;
+        System.out.println("연차 정보 확인: " + hasVacation + ", 남은 연차: " + vacationInfo.getRemain_annual_vacation_days());
+        return hasVacation;
+    }
+
+
+
+    // 연차 지급
+    @Transactional
+    public void allocateVacation(int usersSeq, LocalDate joinDate) {
+        // 연차 지급 전에 기존 연차 데이터 확인
+        AnnualVacationManagementDTO vacationInfo = vacationDAO.getAnnualVacationInfo(usersSeq);
+        if (vacationInfo != null) {
+            // 이미 연차가 존재한다면 중복 지급을 방지
+            System.out.println("이미 연차가 지급되었습니다. 중복 지급 방지");
+            return;
+        }
+
+        int baseAnnualLeave = 15;  // 기본 연차 15일
+        LocalDate now = LocalDate.now();  // 현재 날짜
+
+        // 입사일과 현재 날짜 사이의 근무 일수 계산
+        long daysWorked = ChronoUnit.DAYS.between(joinDate, now);
+
+        // 근무 년차 계산
+        int yearsWorked = (int) (daysWorked / 365);
+
+        int totalLeave;
+        if (yearsWorked >= 1) {
+            // 1년 이상 근무한 경우
+            int additionalLeave = Math.min(yearsWorked - 1, 10);  // 2년차부터 매년 1일 추가, 최대 10일
+            totalLeave = baseAnnualLeave + additionalLeave;
+        } else {
+            // 1년 미만 근무한 경우 비례 연차 계산
+            totalLeave = calculateProRatedLeave(joinDate, now, baseAnnualLeave);
+        }
+
+        // 연차 정보를 데이터베이스에 삽입
+        vacationDAO.insertAnnualVacation(usersSeq, totalLeave);
+        
+        System.out.println("연차가 지급되었습니다. usersSeq: " + usersSeq + ", 총 연차: " + totalLeave);
+        AnnualVacationManagementDTO updatedInfo = vacationDAO.getAnnualVacationInfo(usersSeq);
+        System.out.println("업데이트된 연차 정보: 남은 연차: " + updatedInfo.getRemain_annual_vacation_days());
+    }
+
+
+    private int calculateProRatedLeave(LocalDate joinDate, LocalDate now, int totalAnnualLeave) {
+        long daysWorked = ChronoUnit.DAYS.between(joinDate, now);
+        int proRatedLeave = (int) ((daysWorked / 365.0) * totalAnnualLeave);
+        return Math.max(proRatedLeave, 1);  // 최소 1일의 연차 보장
+    }
+
+
+
+    // 휴가 신청 처리
+    public void applyForVacation(VacationApplicationDTO vacationApplication) {
+        vacationDAO.insertVacationApplication(vacationApplication);
+    }
+
+    // 휴가 신청 내역 조회
+    public List<VacationApplicationDTO> getVacationApplicationsByUser(int userSeq) {
+        return vacationDAO.getVacationApplicationsByUser(userSeq);
+    }
+
+    // 휴가 승인 처리
+    public void approveVacation(int vacationApplicationSeq) {
+        vacationDAO.approveVacation(vacationApplicationSeq);
+
+        // 휴가 승인 후 연차 사용 업데이트
+        VacationApplicationDTO vacationApplication = vacationDAO.getVacationApplicationById(vacationApplicationSeq);
+        int usedDays = (int) ((vacationApplication.getVacation_end_date().getTime() - vacationApplication.getVacation_start_date().getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        vacationDAO.updateVacationUsage(vacationApplication.getVacation_drafter_user_seq(), usedDays);
+    }
+
+    // 특정 기간 동안의 휴가 조회
+    public List<VacationApplicationDTO> getVacationByDateRange(int userSeq, String startDate, String endDate) {
+        return vacationDAO.getVacationByDateRange(userSeq, startDate, endDate);
+    }
+}
