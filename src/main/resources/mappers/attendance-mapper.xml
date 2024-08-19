@@ -30,12 +30,7 @@
 	    set 
 	        check_out_time = #{check_out_time},
 	        <!-- xml 파서가 잘못 해석하지않도록 CDATA로 감싸서 파서 오류 해결 -->
-	        status = <![CDATA[
-	            CASE 
-	                WHEN TO_CHAR(#{check_out_time}, 'HH24:MI') <= '18:00' THEN '조퇴' 
-	                ELSE '퇴근' 
-	            END
-	        ]]>
+	        status = '퇴근' 
 	    where 
 	        TRUNC(attendance_date) = TRUNC(sysdate)
 	        and users_seq = #{users_seq}
@@ -81,6 +76,24 @@
     AND TRUNC(a.attendance_date) = TO_DATE(#{date}, 'YY/MM/DD')
 </select>
 
+	<!-- 근태 일정 삽입 (휴가) -->
+	<insert id="insertAttendance" parameterType="com.kedu.firmware.DTO.AttendanceDTO">
+	    INSERT INTO attendance (
+	        attendance_id, 
+	        users_seq, 
+	        attendance_date, 
+	        check_in_time, 
+	        check_out_time, 
+	        status
+	    ) VALUES (
+	        attendance_seq.nextval, 
+	        #{users_seq}, 
+	        #{attendance_date}, 
+	        #{check_in_time}, 
+	        #{check_out_time}, 
+	        #{status}
+	    )
+	</insert>
 
 
 

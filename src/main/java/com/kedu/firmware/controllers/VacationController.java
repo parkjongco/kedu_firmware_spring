@@ -1,6 +1,7 @@
 package com.kedu.firmware.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,12 +52,26 @@ public class VacationController {
 
 
 
-    // 휴가 신청 처리
+ // 휴가 신청 처리
     @PostMapping("/apply")
     public ResponseEntity<String> applyVacation(@RequestBody VacationApplicationDTO vacationApplication) {
-        vacationService.applyForVacation(vacationApplication);
-        return ResponseEntity.ok("휴가 신청이 완료되었습니다.");
+    	// 시작일이 종료일보다 이후일 경우 에러 메시지 반환
+        if (vacationApplication.getVacation_start_date().after(vacationApplication.getVacation_end_date())) {
+            return ResponseEntity.badRequest().body("휴가 시작일이 종료일보다 늦을 수 없습니다.");
+        }
+    	
+    	try {
+            // 휴가 신청 등록
+            vacationService.applyForVacation(vacationApplication);
+            
+            // 성공 메시지 반환
+            return ResponseEntity.ok("휴가 신청이 완료되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("휴가 신청에 실패했습니다.");
+        }
     }
+
 
     // 휴가 신청 내역 조회
     @GetMapping("/applications/{userSeq}")

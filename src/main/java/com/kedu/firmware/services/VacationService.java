@@ -6,9 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kedu.firmware.DAO.VacationDAO;
 import com.kedu.firmware.DTO.AnnualVacationManagementDTO;
+import com.kedu.firmware.DTO.AttendanceDTO;
 import com.kedu.firmware.DTO.VacationApplicationDTO;
 
-
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -18,6 +20,9 @@ public class VacationService {
 
     @Autowired
     private VacationDAO vacationDAO;
+    
+    @Autowired
+    private AttendanceService attendanceService;
 
     // 해당 사용자가 이미 연차를 부여받았는지 확인
     public boolean hasVacation(int usersSeq) {
@@ -80,9 +85,28 @@ public class VacationService {
 
 
 
-    // 휴가 신청 처리
+ // 휴가 신청 및 근태 일정 등록
+    @Transactional
     public void applyForVacation(VacationApplicationDTO vacationApplication) {
+        // 1. 휴가 신청 삽입
         vacationDAO.insertVacationApplication(vacationApplication);
+
+        // 2. 휴가 기간 동안 근태 일정 등록
+        LocalDate startDate = vacationApplication.getVacation_start_date().toLocalDateTime().toLocalDate();
+        LocalDate endDate = vacationApplication.getVacation_end_date().toLocalDateTime().toLocalDate();
+
+        // 각 날짜별로 근태 일정 등록
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            AttendanceDTO attendanceDTO = new AttendanceDTO();
+            attendanceDTO.setUsers_seq(vacationApplication.getVacation_drafter_user_seq());
+            attendanceDTO.setAttendance_date(Date.valueOf(date));  // java.sql.Date로 변환
+            attendanceDTO.setCheck_in_time(Timestamp.valueOf(date.atTime(9, 0)));  // 오전 9시
+            attendanceDTO.setCheck_out_time(Timestamp.valueOf(date.atTime(18, 0))); // 오후 6시
+            attendanceDTO.setStatus("연차");
+
+            // 근태 일정 삽입
+            attendanceService.insertAttendance(attendanceDTO);
+        }
     }
 
     // 휴가 신청 내역 조회

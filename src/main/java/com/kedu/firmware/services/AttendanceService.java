@@ -39,4 +39,9 @@ public class AttendanceService {
         return attendancedao.findEventsByUserSeqAndDate(usersSeq, date);
     }
 
+    // 근태 일정 삽입(휴가)
+    public void insertAttendance(AttendanceDTO attendanceDTO) {
+        attendancedao.insertAttendance(attendanceDTO);
+    }
+    
 }

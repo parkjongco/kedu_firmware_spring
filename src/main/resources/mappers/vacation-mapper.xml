@@ -75,6 +75,31 @@
             USER_SEQ = #{usersSeq}
     </select>
 
+	<!-- 휴가 신청 삽입 -->
+	<insert id="insertVacationApplication" parameterType="com.kedu.firmware.DTO.VacationApplicationDTO">
+	    INSERT INTO VACATION_APPLICATION (
+	        VACATION_APPLICATION_SEQ,
+	        VACATION_DRAFTER_USER_SEQ,
+	        VACATION_TYPE_SEQ,
+	        VACATION_PERMISSION_USER_SEQ,
+	        VACATION_START_DATE,
+	        VACATION_END_DATE,
+	        VACATION_APPLICATION_DATE,
+	        VACATION_APPLICATION_STATUS,
+	        VACATION_APPLICATION_REASON
+	    )
+	    VALUES (
+	        VACATION_APPLICATION_SEQ.nextval,
+	        #{vacation_drafter_user_seq},
+	        #{vacation_type_seq},
+	        #{vacation_permession_user_seq},
+	        #{vacation_start_date},
+	        #{vacation_end_date},
+	        sysdate,
+	        #{vacation_application_status},
+	        #{vacation_application_reason}
+	    )
+	</insert>
 
   
   

@@ -58,4 +58,9 @@ public class AttendanceDAO {
 	    return mybatis.selectList("Attendance.findAttendanceEventsByDepartment", params);
 	}
 
+	// 근태 일정 삽입(휴가)
+    public void insertAttendance(AttendanceDTO attendanceDTO) {
+        mybatis.insert("Attendance.insertAttendance", attendanceDTO);
+    }
+    
 }
