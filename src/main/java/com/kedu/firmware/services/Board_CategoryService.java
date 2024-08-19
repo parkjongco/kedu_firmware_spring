@@ -23,4 +23,8 @@ public class Board_CategoryService {
     public List<BoardDTO> getPostsByCategory(int category_seq) {
         return board_CategoryDAO.getPostsByCategory(category_seq);
     }
+
+    public Board_CategoryDTO getDefaultCategory() {
+        return board_CategoryDAO.getDefaultCategory();
+    }
 }

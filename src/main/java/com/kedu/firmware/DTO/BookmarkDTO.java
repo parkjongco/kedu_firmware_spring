@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BookmarkDTO {
     private int bookmark_seq;
-    private String user_seq;
+    private int user_seq;
     private int board_seq;
 
     public BookmarkDTO() {}
-    public BookmarkDTO(int bookmark_seq, String user_seq, int board_seq) {
+    public BookmarkDTO(int bookmark_seq, int user_seq, int board_seq) {
         this.bookmark_seq = bookmark_seq;
         this.user_seq = user_seq;
         this.board_seq = board_seq;
@@ -25,12 +25,12 @@ public class BookmarkDTO {
         this.bookmark_seq = bookmark_seq;
     }
 
-    public String getUsername() {
+    public int getUser_seq() {
         return user_seq;
     }
 
-    public void setUsername(String username) {
-        this.user_seq = username;
+    public void setUser_seq(int user_seq) {
+        this.user_seq = user_seq;
     }
 
     public int getBoard_seq() {

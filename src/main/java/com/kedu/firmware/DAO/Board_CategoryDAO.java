@@ -22,4 +22,8 @@ public class Board_CategoryDAO {
         System.out.println("category_seq::::: "+category_seq);
         return mybatis.selectList("category.selectByCategory", category_seq);
     }
+
+    public Board_CategoryDTO getDefaultCategory() {
+        return mybatis.selectOne("category.selectDefaultCategory");
+    }
 }
