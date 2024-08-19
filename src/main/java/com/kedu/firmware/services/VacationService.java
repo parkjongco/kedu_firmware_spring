@@ -107,25 +107,49 @@ public class VacationService {
             // 근태 일정 삽입
             attendanceService.insertAttendance(attendanceDTO);
         }
+     // 3. 연차 사용 업데이트
+        updateVacationUsage(vacationApplication);
     }
 
-    // 휴가 신청 내역 조회
-    public List<VacationApplicationDTO> getVacationApplicationsByUser(int userSeq) {
-        return vacationDAO.getVacationApplicationsByUser(userSeq);
-    }
+    // 연차 사용 업데이트
+    private void updateVacationUsage(VacationApplicationDTO vacationApplication) {
+        LocalDate startDate = vacationApplication.getVacation_start_date().toLocalDateTime().toLocalDate();
+        LocalDate endDate = vacationApplication.getVacation_end_date().toLocalDateTime().toLocalDate();
+        int usedDays = (int) (ChronoUnit.DAYS.between(startDate, endDate) + 1);
 
-    // 휴가 승인 처리
-    public void approveVacation(int vacationApplicationSeq) {
-        vacationDAO.approveVacation(vacationApplicationSeq);
-
-        // 휴가 승인 후 연차 사용 업데이트
-        VacationApplicationDTO vacationApplication = vacationDAO.getVacationApplicationById(vacationApplicationSeq);
-        int usedDays = (int) ((vacationApplication.getVacation_end_date().getTime() - vacationApplication.getVacation_start_date().getTime()) / (1000 * 60 * 60 * 24)) + 1;
         vacationDAO.updateVacationUsage(vacationApplication.getVacation_drafter_user_seq(), usedDays);
     }
 
-    // 특정 기간 동안의 휴가 조회
-    public List<VacationApplicationDTO> getVacationByDateRange(int userSeq, String startDate, String endDate) {
-        return vacationDAO.getVacationByDateRange(userSeq, startDate, endDate);
+    // 휴가 삭제 처리
+    @Transactional
+    public void deleteVacation(int vacationApplicationSeq) {
+        VacationApplicationDTO vacationApplication = vacationDAO.getVacationApplicationById(vacationApplicationSeq);
+
+        // 1. ANNUAL_VACATION_APPLICATION 테이블에서 연차 사용량 업데이트
+        int usedDays = (int) ((vacationApplication.getVacation_end_date().getTime() - vacationApplication.getVacation_start_date().getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        vacationDAO.revertVacationUsage(vacationApplication.getVacation_drafter_user_seq(), usedDays);
+
+        // 2. VACATION_APPLICATION 테이블에서 휴가 신청 삭제
+        vacationDAO.deleteVacationApplication(vacationApplicationSeq);
     }
+    
+//    // 휴가 승인 처리
+//    public void approveVacation(int vacationApplicationSeq) {
+//        vacationDAO.approveVacation(vacationApplicationSeq);
+//
+//        // 휴가 승인 후 연차 사용 업데이트
+//        VacationApplicationDTO vacationApplication = vacationDAO.getVacationApplicationById(vacationApplicationSeq);
+//        int usedDays = (int) ((vacationApplication.getVacation_end_date().getTime() - vacationApplication.getVacation_start_date().getTime()) / (1000 * 60 * 60 * 24)) + 1;
+//        vacationDAO.updateVacationUsage(vacationApplication.getVacation_drafter_user_seq(), usedDays);
+//    }
+
+//    // 특정 기간 동안의 휴가 조회
+//    public List<VacationApplicationDTO> getVacationByDateRange(int userSeq, String startDate, String endDate) {
+//        return vacationDAO.getVacationByDateRange(userSeq, startDate, endDate);
+//    }
+//    
+//    // 특정 사용자의 연차 정보 조회
+//    public AnnualVacationManagementDTO getAnnualVacationInfo(int usersSeq) {
+//        return vacationDAO.getAnnualVacationInfo(usersSeq);
+//    }
 }

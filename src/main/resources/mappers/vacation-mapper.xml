@@ -101,8 +101,26 @@
 	    )
 	</insert>
 
+	  <!-- 연차 사용 업데이트 -->
+	  <update id="updateVacationUsage" parameterType="map">
+	    UPDATE ANNUAL_VACATION_APPLICATION
+	    SET USED_ANNUAL_VACATION_DAYS = USED_ANNUAL_VACATION_DAYS + #{usedDays},
+	        REMAIN_ANNUAL_VACATION_DAYS = REMAIN_ANNUAL_VACATION_DAYS - #{usedDays}
+	    WHERE USER_SEQ = #{usersSeq}
+	  </update>
   
-  
+  	<!-- 연차 사용량 복구 -->
+    <update id="revertVacationUsage" parameterType="map">
+        UPDATE ANNUAL_VACATION_APPLICATION
+        SET USED_ANNUAL_VACATION_DAYS = USED_ANNUAL_VACATION_DAYS - #{usedDays},
+            REMAIN_ANNUAL_VACATION_DAYS = REMAIN_ANNUAL_VACATION_DAYS + #{usedDays}
+        WHERE USER_SEQ = #{usersSeq}
+    </update>
+
+    <!-- 휴가 신청 삭제 -->
+    <delete id="deleteVacationApplication" parameterType="int">
+        DELETE FROM VACATION_APPLICATION WHERE VACATION_APPLICATION_SEQ = #{vacationApplicationSeq}
+    </delete>
 
 
 </mapper>

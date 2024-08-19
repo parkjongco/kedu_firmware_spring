@@ -49,10 +49,10 @@ public class VacationDAO {
         return mybatis.selectList("Vacation.getVacationApplicationsByUser", userSeq);
     }
 
-    // 휴가 승인
-    public void approveVacation(int vacationApplicationSeq) {
-        mybatis.update("Vacation.approveVacation", vacationApplicationSeq);
-    }
+//    // 휴가 승인
+//    public void approveVacation(int vacationApplicationSeq) {
+//        mybatis.update("Vacation.approveVacation", vacationApplicationSeq);
+//    }
 
     // 연차 사용 업데이트
     public void updateVacationUsage(int usersSeq, int usedDays) {
@@ -62,16 +62,30 @@ public class VacationDAO {
         mybatis.update("Vacation.updateVacationUsage", params);
     }
 
-    // 특정 기간 동안의 휴가 조회
-    public List<VacationApplicationDTO> getVacationByDateRange(int userSeq, String startDate, String endDate) {
+    // 연차 사용량 복구 (추가된 메서드)
+    public void revertVacationUsage(int usersSeq, int usedDays) {
         Map<String, Object> params = new HashMap<>();
-        params.put("userSeq", userSeq);
-        params.put("startDate", startDate);
-        params.put("endDate", endDate);
-        return mybatis.selectList("Vacation.getVacationByDateRange", params);
+        params.put("usersSeq", usersSeq);
+        params.put("usedDays", usedDays);
+        mybatis.update("Vacation.revertVacationUsage", params);
     }
 
-    // 휴가 신청 단건 조회 (ID 기준)
+    // 휴가 신청 삭제 (추가된 메서드)
+    public void deleteVacationApplication(int vacationApplicationSeq) {
+        mybatis.delete("Vacation.deleteVacationApplication", vacationApplicationSeq);
+    }
+    
+    
+//    // 특정 기간 동안의 휴가 조회
+//    public List<VacationApplicationDTO> getVacationByDateRange(int userSeq, String startDate, String endDate) {
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("userSeq", userSeq);
+//        params.put("startDate", startDate);
+//        params.put("endDate", endDate);
+//        return mybatis.selectList("Vacation.getVacationByDateRange", params);
+//    }
+//
+    // 휴가 신청 단건 조회 (ID 기준) (삭제 기능에서 사용)
     public VacationApplicationDTO getVacationApplicationById(int vacationApplicationSeq) {
         return mybatis.selectOne("Vacation.getVacationApplicationById", vacationApplicationSeq);
     }

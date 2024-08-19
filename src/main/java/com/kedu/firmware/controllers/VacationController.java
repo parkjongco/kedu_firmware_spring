@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.kedu.firmware.DTO.AnnualVacationManagementDTO;
 import com.kedu.firmware.DTO.UsersDTO;
 import com.kedu.firmware.DTO.VacationApplicationDTO;
 import com.kedu.firmware.services.VacationService;
@@ -72,28 +73,51 @@ public class VacationController {
         }
     }
 
+	 // 휴가 삭제 처리 (추가된 메서드)
+	    @DeleteMapping("/delete/{vacationApplicationSeq}")
+	    public ResponseEntity<String> deleteVacation(@PathVariable int vacationApplicationSeq) {
+	        try {
+	            vacationService.deleteVacation(vacationApplicationSeq);
+	            return ResponseEntity.ok("휴가가 삭제되었습니다.");
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("휴가 삭제에 실패했습니다.");
+	        }
+	    }
+    
+    
+//    // 휴가 신청 내역 조회
+//    @GetMapping("/applications/{userSeq}")
+//    public ResponseEntity<List<VacationApplicationDTO>> getVacationApplications(@PathVariable int userSeq) {
+//        List<VacationApplicationDTO> applications = vacationService.getVacationApplicationsByUser(userSeq);
+//        return ResponseEntity.ok(applications);
+//    }
 
-    // 휴가 신청 내역 조회
-    @GetMapping("/applications/{userSeq}")
-    public ResponseEntity<List<VacationApplicationDTO>> getVacationApplications(@PathVariable int userSeq) {
-        List<VacationApplicationDTO> applications = vacationService.getVacationApplicationsByUser(userSeq);
-        return ResponseEntity.ok(applications);
-    }
+//    // 휴가 승인 처리
+//    @PostMapping("/approve/{vacationApplicationSeq}")
+//    public ResponseEntity<String> approveVacation(@PathVariable int vacationApplicationSeq) {
+//        vacationService.approveVacation(vacationApplicationSeq);
+//        return ResponseEntity.ok("휴가가 승인되었습니다.");
+//    }
 
-    // 휴가 승인 처리
-    @PostMapping("/approve/{vacationApplicationSeq}")
-    public ResponseEntity<String> approveVacation(@PathVariable int vacationApplicationSeq) {
-        vacationService.approveVacation(vacationApplicationSeq);
-        return ResponseEntity.ok("휴가가 승인되었습니다.");
-    }
-
-    // 특정 기간 동안의 휴가 조회
-    @GetMapping("/by-date-range")
-    public ResponseEntity<List<VacationApplicationDTO>> getVacationByDateRange(
-            @RequestParam int userSeq, 
-            @RequestParam String startDate, 
-            @RequestParam String endDate) {
-        List<VacationApplicationDTO> vacations = vacationService.getVacationByDateRange(userSeq, startDate, endDate);
-        return ResponseEntity.ok(vacations);
-    }
+//    // 특정 기간 동안의 휴가 조회
+//    @GetMapping("/byDateRange")
+//    public ResponseEntity<List<VacationApplicationDTO>> getVacationByDateRange(
+//            @RequestParam int userSeq, 
+//            @RequestParam String startDate, 
+//            @RequestParam String endDate) {
+//        List<VacationApplicationDTO> vacations = vacationService.getVacationByDateRange(userSeq, startDate, endDate);
+//        return ResponseEntity.ok(vacations);
+//    }
+    
+//    // 사용자의 연차 정보 조회
+//    @GetMapping("/annual/{usersSeq}")
+//    public ResponseEntity<AnnualVacationManagementDTO> getAnnualVacationInfo(@PathVariable int usersSeq) {
+//        AnnualVacationManagementDTO annualVacationInfo = vacationService.getAnnualVacationInfo(usersSeq);
+//        if (annualVacationInfo != null) {
+//            return ResponseEntity.ok(annualVacationInfo);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 }
