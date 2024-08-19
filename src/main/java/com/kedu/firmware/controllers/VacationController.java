@@ -86,12 +86,12 @@ public class VacationController {
 	    }
     
     
-//    // 휴가 신청 내역 조회
-//    @GetMapping("/applications/{userSeq}")
-//    public ResponseEntity<List<VacationApplicationDTO>> getVacationApplications(@PathVariable int userSeq) {
-//        List<VacationApplicationDTO> applications = vacationService.getVacationApplicationsByUser(userSeq);
-//        return ResponseEntity.ok(applications);
-//    }
+    // 휴가 신청 내역 조회
+    @GetMapping("/applications/{userSeq}")
+    public ResponseEntity<List<VacationApplicationDTO>> getVacationApplications(@PathVariable int userSeq) {
+        List<VacationApplicationDTO> applications = vacationService.getVacationApplicationsByUser(userSeq);
+        return ResponseEntity.ok(applications);
+    }
 
 //    // 휴가 승인 처리
 //    @PostMapping("/approve/{vacationApplicationSeq}")
@@ -110,14 +110,14 @@ public class VacationController {
 //        return ResponseEntity.ok(vacations);
 //    }
     
-//    // 사용자의 연차 정보 조회
-//    @GetMapping("/annual/{usersSeq}")
-//    public ResponseEntity<AnnualVacationManagementDTO> getAnnualVacationInfo(@PathVariable int usersSeq) {
-//        AnnualVacationManagementDTO annualVacationInfo = vacationService.getAnnualVacationInfo(usersSeq);
-//        if (annualVacationInfo != null) {
-//            return ResponseEntity.ok(annualVacationInfo);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+    // 사용자의 연차 정보 조회
+    @GetMapping("/annual/{usersSeq}")
+    public ResponseEntity<AnnualVacationManagementDTO> getAnnualVacationInfo(@PathVariable int usersSeq) {
+        AnnualVacationManagementDTO annualVacationInfo = vacationService.getAnnualVacationInfo(usersSeq);
+        if (annualVacationInfo != null) {
+            return ResponseEntity.ok(annualVacationInfo);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

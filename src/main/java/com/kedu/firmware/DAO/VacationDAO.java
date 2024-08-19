@@ -1,5 +1,6 @@
 package com.kedu.firmware.DAO;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class VacationDAO {
         mybatis.update("Vacation.updateVacationUsage", params);
     }
 
-    // 연차 사용량 복구 (추가된 메서드)
+    // 연차 사용량 복구
     public void revertVacationUsage(int usersSeq, int usedDays) {
         Map<String, Object> params = new HashMap<>();
         params.put("usersSeq", usersSeq);
@@ -70,10 +71,21 @@ public class VacationDAO {
         mybatis.update("Vacation.revertVacationUsage", params);
     }
 
-    // 휴가 신청 삭제 (추가된 메서드)
+    // 휴가 신청 삭제
     public void deleteVacationApplication(int vacationApplicationSeq) {
         mybatis.delete("Vacation.deleteVacationApplication", vacationApplicationSeq);
     }
+
+    // 휴가 일정 삭제
+    public void deleteAttendanceByVacationApplication(int usersSeq, Date startDate, Date endDate) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("usersSeq", usersSeq);
+        params.put("startDate", startDate);
+        params.put("endDate", endDate);
+        
+        mybatis.delete("Vacation.deleteAttendanceByVacationApplication", params);
+    }
+
     
     
 //    // 특정 기간 동안의 휴가 조회

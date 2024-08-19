@@ -12,6 +12,35 @@ public class AttendanceDTO {
 	private Timestamp check_out_time;
 	private String status;	
 	
+	//
+	// 조인을 위해 추가된 필드
+    private String vacation_application_status;  
+
+    public String getVacation_application_status() {
+		return vacation_application_status;
+	}
+
+	public void setVacation_application_status(String vacation_application_status) {
+		this.vacation_application_status = vacation_application_status;
+	}
+	
+    public AttendanceDTO(int attendance_id, int users_seq, Date attendance_date, Timestamp check_in_time,
+			Timestamp check_out_time, String status, String vacation_application_status) {
+		super();
+		this.attendance_id = attendance_id;
+		this.users_seq = users_seq;
+		this.attendance_date = attendance_date;
+		this.check_in_time = check_in_time;
+		this.check_out_time = check_out_time;
+		this.status = status;
+		this.vacation_application_status = vacation_application_status;
+	}
+
+	//
+    
+    
+    
+	
 
 	public AttendanceDTO(int attendance_id, int users_seq, Date attendance_date, Timestamp check_in_time,
 			Timestamp check_out_time, String status) {

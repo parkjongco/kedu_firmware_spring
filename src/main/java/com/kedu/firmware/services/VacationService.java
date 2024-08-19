@@ -129,9 +129,22 @@ public class VacationService {
         int usedDays = (int) ((vacationApplication.getVacation_end_date().getTime() - vacationApplication.getVacation_start_date().getTime()) / (1000 * 60 * 60 * 24)) + 1;
         vacationDAO.revertVacationUsage(vacationApplication.getVacation_drafter_user_seq(), usedDays);
 
-        // 2. VACATION_APPLICATION 테이블에서 휴가 신청 삭제
+        // 2. ATTENDANCE 테이블에서 해당 휴가와 관련된 레코드 삭제
+        Date startDate = new Date(vacationApplication.getVacation_start_date().getTime());
+        Date endDate = new Date(vacationApplication.getVacation_end_date().getTime());
+        
+        vacationDAO.deleteAttendanceByVacationApplication(vacationApplication.getVacation_drafter_user_seq(), startDate, endDate);
+
+        // 3. VACATION_APPLICATION 테이블에서 휴가 신청 삭제
         vacationDAO.deleteVacationApplication(vacationApplicationSeq);
     }
+
+
+    
+    public List<VacationApplicationDTO> getVacationApplicationsByUser(int userSeq) {
+        return vacationDAO.getVacationApplicationsByUser(userSeq);
+    }
+
     
 //    // 휴가 승인 처리
 //    public void approveVacation(int vacationApplicationSeq) {
@@ -148,8 +161,8 @@ public class VacationService {
 //        return vacationDAO.getVacationByDateRange(userSeq, startDate, endDate);
 //    }
 //    
-//    // 특정 사용자의 연차 정보 조회
-//    public AnnualVacationManagementDTO getAnnualVacationInfo(int usersSeq) {
-//        return vacationDAO.getAnnualVacationInfo(usersSeq);
-//    }
+    // 특정 사용자의 연차 정보 조회
+    public AnnualVacationManagementDTO getAnnualVacationInfo(int usersSeq) {
+        return vacationDAO.getAnnualVacationInfo(usersSeq);
+    }
 }

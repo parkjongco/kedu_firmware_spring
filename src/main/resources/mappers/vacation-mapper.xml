@@ -23,19 +23,22 @@
   </insert>
 
   <!-- 사용자의 모든 휴가 기록 조회 -->
-  <select id="getUserVacationRecords" parameterType="int" resultType="com.kedu.firmware.DTO.AnnualVacationManagementDTO">
+  <select id="getVacationApplicationsByUser" parameterType="int" resultType="com.kedu.firmware.DTO.VacationApplicationDTO">
     SELECT 
-      VACATION_APPLICATION_SEQ,
-      USERS_SEQ,
-      VACATION_TYPE_SEQ,
-      VACATION_APPLICATION_DATE,
-      VACATION_APPLICATION_STATUS,
-      VACATION_START_DATE,
-      VACATION_END_DATE
-    FROM ANNUAL_VACATION_APPLICATION
-    WHERE USERS_SEQ = #{usersSeq}
-    ORDER BY VACATION_APPLICATION_DATE DESC
-  </select>
+        VACATION_APPLICATION_SEQ,
+        VACATION_DRAFTER_USER_SEQ,
+        VACATION_TYPE_SEQ,
+        VACATION_PERMISSION_USER_SEQ,
+        VACATION_START_DATE,
+        VACATION_END_DATE,
+        VACATION_APPLICATION_DATE,
+        VACATION_APPLICATION_REASON,
+        VACATION_APPLICATION_STATUS
+    FROM VACATION_APPLICATION
+    WHERE VACATION_DRAFTER_USER_SEQ = #{userSeq}
+    ORDER BY VACATION_START_DATE DESC
+</select>
+
 
   <!-- 휴가 취소 -->
   <update id="cancelVacation" parameterType="int">
@@ -101,6 +104,23 @@
 	    )
 	</insert>
 
+	<!-- 휴가 신청 단건 조회 -->
+	<select id="getVacationApplicationById" parameterType="int" resultType="com.kedu.firmware.DTO.VacationApplicationDTO">
+	    SELECT 
+	        VACATION_APPLICATION_SEQ,
+	        VACATION_DRAFTER_USER_SEQ,
+	        VACATION_TYPE_SEQ,
+	        VACATION_PERMISSION_USER_SEQ,
+	        VACATION_START_DATE,
+	        VACATION_END_DATE,
+	        VACATION_APPLICATION_DATE,
+	        VACATION_APPLICATION_REASON,
+	        VACATION_APPLICATION_STATUS
+	    FROM VACATION_APPLICATION
+	    WHERE VACATION_APPLICATION_SEQ = #{vacationApplicationSeq}
+	</select>
+	
+
 	  <!-- 연차 사용 업데이트 -->
 	  <update id="updateVacationUsage" parameterType="map">
 	    UPDATE ANNUAL_VACATION_APPLICATION
@@ -121,6 +141,14 @@
     <delete id="deleteVacationApplication" parameterType="int">
         DELETE FROM VACATION_APPLICATION WHERE VACATION_APPLICATION_SEQ = #{vacationApplicationSeq}
     </delete>
+
+	<!-- 특정 휴가 신청과 관련된 attendance 레코드 삭제 -->
+<delete id="deleteAttendanceByVacationApplication" parameterType="map">
+    DELETE FROM ATTENDANCE
+    WHERE USERS_SEQ = #{usersSeq}
+    AND ATTENDANCE_DATE BETWEEN TO_DATE(#{startDate}, 'YY/MM/DD') AND TO_DATE(#{endDate}, 'YY/MM/DD')
+</delete>
+
 
 
 </mapper>
