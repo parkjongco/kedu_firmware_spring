@@ -36,10 +36,6 @@ public class BoardController {
         String loginID = (String) session.getAttribute("loginID");
 
 
-
-
-
-
         if (loginID == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인되어 있지 않으면 Unauthorized 응답
         }
