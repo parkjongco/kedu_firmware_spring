@@ -9,7 +9,10 @@
     </select>
 
     <select id="selectByCategory" resultType="com.kedu.firmware.DTO.BoardDTO">
-        SELECT * FROM board WHERE category_seq = #{category_seq}
+        SELECT B.BOARD_SEQ, B.BOARD_TITLE, B.BOARD_CONTENTS ,B.BOARD_WRITE_DATE,
+        B.BOARD_VIEW_COUNT, B.CATEGORY_SEQ, B.USER_SEQ, U.USERS_NAME
+        FROM board B LEFT JOIN users U ON B.USER_SEQ = U.USERS_SEQ
+        WHERE B.category_seq = #{category_seq}
     </select>
 
     <select id="selectDefaultCategory" resultType="com.kedu.firmware.DTO.Board_CategoryDTO">
