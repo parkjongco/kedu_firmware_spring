@@ -12,4 +12,7 @@
         SELECT * FROM board WHERE category_seq = #{category_seq}
     </select>
 
+    <select id="selectDefaultCategory" resultType="com.kedu.firmware.DTO.Board_CategoryDTO">
+        SELECT * FROM board_category WHERE category_seq = 0
+    </select>
 </mapper>
