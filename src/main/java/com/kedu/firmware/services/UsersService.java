@@ -1,24 +1,18 @@
 package com.kedu.firmware.services;
 
 
-import java.util.List;
-import java.util.Map;
-
+import com.kedu.firmware.DAO.*;
+import com.kedu.firmware.DTO.DepartmentDTO;
+import com.kedu.firmware.DTO.UnitDTO;
+import com.kedu.firmware.DTO.UsersDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kedu.firmware.DAO.DepartmentDAO;
-import com.kedu.firmware.DAO.EmployeeDAO;
-import com.kedu.firmware.DAO.UnitDAO;
-import com.kedu.firmware.DAO.UserProfileDAO;
-import com.kedu.firmware.DAO.UserUpdateRequestesDAO;
-import com.kedu.firmware.DAO.UsersDAO;
-import com.kedu.firmware.DTO.DepartmentDTO;
-import com.kedu.firmware.DTO.UnitDTO;
-import com.kedu.firmware.DTO.UsersDTO;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UsersService {
@@ -194,6 +188,7 @@ public class UsersService {
     public UsersDTO selectUserByEmail(String Email) {
     	return usersDAO.selectUserByEmail(Email);
     }
-    
-    
+
+
+
 }

@@ -26,7 +26,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 "http://192.168.1.36:3000",
                 "http://192.168.1.172:3000",
                 "http://192.168.1.43:3000",
-                "http://localhost:3000"
+                "http://localhost:3000",
+                    "http://192.168.219.103:3000"
             ) // 프론트엔드 출처와 동일한 출처로 설정
             .withSockJS(); // SockJS를 사용할 경우 추가 설정
     }

@@ -13,15 +13,26 @@ public class BoardDTO {
 	private Timestamp board_write_date;
 	private int board_view_count;
 	private int category_seq;
+	private int user_seq;
+	private String users_name;
+
+	public int getUser_seq() {
+		return user_seq;
+	}
+
+	public void setUser_seq(int user_seq) {
+		this.user_seq = user_seq;
+	}
 
 	public BoardDTO() {}
-	public BoardDTO(int board_seq, String board_title, String board_contents, Timestamp board_write_date, int board_view_count, int category_seq) {
+	public BoardDTO(int board_seq, String board_title, String board_contents, Timestamp board_write_date, int board_view_count, int category_seq,int user_seq) {
 		this.board_seq = board_seq;
 		this.board_title = board_title;
 		this.board_contents = board_contents;
 		this.board_write_date = board_write_date;
 		this.board_view_count = board_view_count;
 		this.category_seq = category_seq;
+		this.user_seq = user_seq;
 	}
 
 	public int getBoard_seq() {
@@ -70,6 +81,14 @@ public class BoardDTO {
 
 	public void setCategory_seq(int category_seq) {
 		this.category_seq = category_seq;
+	}
+
+	public String getUsers_name() {
+		return users_name;
+	}
+
+	public void setUsers_name(String user_name) {
+		this.users_name = user_name;
 	}
 
 }
