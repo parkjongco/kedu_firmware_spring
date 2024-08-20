@@ -125,4 +125,8 @@ public class UsersDTO {
     public void setUsers_is_admin(Integer users_is_admin) {
         this.users_is_admin = users_is_admin;
     }
+
+    public boolean isAdmin() {
+        return users_is_admin != null && users_is_admin == 1;
+    }
 }
