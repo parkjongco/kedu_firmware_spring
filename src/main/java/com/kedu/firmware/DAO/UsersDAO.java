@@ -75,6 +75,18 @@ public class UsersDAO {
         return mybatis.selectList("Users.getAllUsers");
     }
     
+    // 사용자 시퀀스로 사용자 이름 조회
+    public String findUserNameBySeq(Long usersSeq) {
+        logger.info("findUserNameBySeq 호출: usersSeq={}", usersSeq);
+        String userName = mybatis.selectOne("Users.findUserNameBySeq", usersSeq);
+        if (userName == null) {
+            logger.warn("사용자 이름을 찾을 수 없습니다: usersSeq={}", usersSeq);
+        } else {
+            logger.info("사용자 이름 찾기 성공: usersSeq={}, userName={}", usersSeq, userName);
+        }
+        return userName;
+    }
+    
     // 유저코드로 본인의 부서 인원들의 정보를 조회
     // excludeLoginID는 조회에서 제외시킬 ID이다(본인)
     public List<Map<String, String>> findDepartmentInfoByUserCode(String departmentPrefix, String excludeLoginID) {

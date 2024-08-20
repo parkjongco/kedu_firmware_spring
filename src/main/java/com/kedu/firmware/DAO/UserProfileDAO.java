@@ -38,4 +38,10 @@ public class UserProfileDAO {
     public void deleteUserProfile(Long userProfileSeq) {
         mybatis.delete("UserProfile.deleteUserProfile", userProfileSeq);
     }
+    
+ // 사용자 시퀀스를 기반으로 프로필 삭제 메서드 추가
+    public void deleteUserProfileByUserSeq(Long userSeq) {
+        mybatis.delete("UserProfile.deleteUserProfileByUserSeq", userSeq);
+    }
+
 }

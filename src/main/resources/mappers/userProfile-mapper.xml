@@ -82,5 +82,9 @@
     <delete id="deleteUserProfile">
         DELETE FROM user_profile WHERE user_profile_seq = #{userProfileSeq}
     </delete>
+    
+    <delete id="deleteUserProfileByUserSeq">
+    	DELETE FROM user_profile WHERE users_seq = #{usersSeq}
+	</delete>
 
 </mapper>

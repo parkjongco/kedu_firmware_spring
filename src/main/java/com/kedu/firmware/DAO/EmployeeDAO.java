@@ -1,6 +1,9 @@
 package com.kedu.firmware.DAO;
 
 import com.kedu.firmware.DTO.EmployeeDTO;
+
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -35,5 +38,10 @@ public class EmployeeDAO {
     // 지정된 user_seq를 참조하는 모든 직원 레코드를 삭제
     public void deleteByUserSeq(int userSeq) {
         mybatis.delete("Employee.deleteByUserSeq", userSeq);
+    }
+    
+ // EmployeeDAO에서 직원 정보를 조회하여 반환하는 메소드
+    public List<EmployeeDTO> selectAllEmployees() {
+        return mybatis.selectList("Employee.selectAllEmployees");  // EmployeeMapper.xml에 정의된 쿼리 호출
     }
 }

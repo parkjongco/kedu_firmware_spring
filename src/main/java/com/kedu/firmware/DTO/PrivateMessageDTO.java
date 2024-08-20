@@ -8,19 +8,19 @@ public class PrivateMessageDTO {
     private String receiver_username;  // 받는 사람의 사용자 이름
     private String content;  // 메시지 내용
     private Timestamp send_date;  // 보낸 날짜
-   
+    private Boolean read;  // 메시지 읽음 상태 (Boolean으로 변경)
 
     // 기본 생성자
     public PrivateMessageDTO() {
     }
 
     // 매개변수 생성자
-    public PrivateMessageDTO(String sender_username, String receiver_username, String content, Timestamp send_date, Integer read) {
+    public PrivateMessageDTO(String sender_username, String receiver_username, String content, Timestamp send_date, Boolean read) {
         this.sender_username = sender_username;
         this.receiver_username = receiver_username;
         this.content = content;
         this.send_date = send_date;
-   
+        this.read = read;
     }
 
     // Getter 및 Setter 메서드
@@ -63,5 +63,13 @@ public class PrivateMessageDTO {
 
     public void setSend_date(Timestamp send_date) {
         this.send_date = send_date;
+    }
+
+    public Boolean getRead() {
+        return read;
+    }
+
+    public void setRead(Boolean read) {
+        this.read = read;
     }
 }
