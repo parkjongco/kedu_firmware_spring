@@ -9,6 +9,8 @@ import com.kedu.firmware.DTO.AnnualVacationManagementDTO;
 import com.kedu.firmware.DTO.AttendanceDTO;
 import com.kedu.firmware.DTO.VacationApplicationDTO;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -24,6 +26,7 @@ public class VacationService {
     @Autowired
     private AttendanceService attendanceService;
 
+    
     // 해당 사용자가 이미 연차를 부여받았는지 확인
     public boolean hasVacation(int usersSeq) {
         AnnualVacationManagementDTO vacationInfo = vacationDAO.getAnnualVacationInfo(usersSeq);
@@ -140,21 +143,29 @@ public class VacationService {
     }
 
 
-    
+    // 특정 유저의 휴가 신청 내역 조회
     public List<VacationApplicationDTO> getVacationApplicationsByUser(int userSeq) {
         return vacationDAO.getVacationApplicationsByUser(userSeq);
     }
-
     
-//    // 휴가 승인 처리
-//    public void approveVacation(int vacationApplicationSeq) {
-//        vacationDAO.approveVacation(vacationApplicationSeq);
-//
-//        // 휴가 승인 후 연차 사용 업데이트
-//        VacationApplicationDTO vacationApplication = vacationDAO.getVacationApplicationById(vacationApplicationSeq);
+    // 모든 유저의 휴가 신청 내역 조회 (관리자)
+    public List<VacationApplicationDTO> getAllVacationApplications() {
+        return vacationDAO.getAllVacationApplications();  // 모든 유저의 휴가 신청 내역 조회
+    }
+    
+    // 휴가 승인 처리
+    public void approveVacation(int vacationApplicationSeq, int userSeq) {
+    	
+
+        vacationDAO.approveVacation(vacationApplicationSeq, userSeq);
+
+        // 휴가 승인 후 연차 사용 업데이트
+        VacationApplicationDTO vacationApplication = vacationDAO.getVacationApplicationById(vacationApplicationSeq);
+        
+        // 휴가 신청을 할때 연차가 소모되는 방향으로 노선을 바꿈 (휴가 신청 취소되면 휴가 사용 복구 됌)
 //        int usedDays = (int) ((vacationApplication.getVacation_end_date().getTime() - vacationApplication.getVacation_start_date().getTime()) / (1000 * 60 * 60 * 24)) + 1;
 //        vacationDAO.updateVacationUsage(vacationApplication.getVacation_drafter_user_seq(), usedDays);
-//    }
+    }
 
 //    // 특정 기간 동안의 휴가 조회
 //    public List<VacationApplicationDTO> getVacationByDateRange(int userSeq, String startDate, String endDate) {

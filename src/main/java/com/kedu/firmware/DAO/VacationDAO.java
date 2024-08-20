@@ -50,10 +50,22 @@ public class VacationDAO {
         return mybatis.selectList("Vacation.getVacationApplicationsByUser", userSeq);
     }
 
-//    // 휴가 승인
-//    public void approveVacation(int vacationApplicationSeq) {
-//        mybatis.update("Vacation.approveVacation", vacationApplicationSeq);
-//    }
+    // 모든 유저의 휴가 신청 내역 조회
+    public List<VacationApplicationDTO> getAllVacationApplications() {
+        return mybatis.selectList("Vacation.getAllVacationApplications");
+    }
+
+    
+ // 휴가 승인 처리
+    public void approveVacation(int vacationApplicationSeq, int userSeq) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("vacationApplicationSeq", vacationApplicationSeq);
+        params.put("approverSeq", userSeq);
+
+        // 휴가 승인 및 승인자의 SEQ 업데이트
+        mybatis.update("Vacation.approveVacation", params);
+    }
+
 
     // 연차 사용 업데이트
     public void updateVacationUsage(int usersSeq, int usedDays) {

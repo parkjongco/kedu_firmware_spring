@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import com.kedu.firmware.DTO.AnnualVacationManagementDTO;
 import com.kedu.firmware.DTO.UsersDTO;
 import com.kedu.firmware.DTO.VacationApplicationDTO;
+import com.kedu.firmware.services.UsersService;
 import com.kedu.firmware.services.VacationService;
+
+import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -22,6 +25,12 @@ public class VacationController {
     @Autowired
     private VacationService vacationService;
 
+    @Autowired
+	private UsersService usersServ;
+    
+    @Autowired
+    private HttpSession session;
+    
     // 로그인 후 휴가 상태 체크 및 휴가 지급 처리
     @PostMapping("/check")
     public ResponseEntity<Map<String, String>> checkVacation(@RequestBody Map<String, Object> payload) {
@@ -93,12 +102,26 @@ public class VacationController {
         return ResponseEntity.ok(applications);
     }
 
-//    // 휴가 승인 처리
-//    @PostMapping("/approve/{vacationApplicationSeq}")
-//    public ResponseEntity<String> approveVacation(@PathVariable int vacationApplicationSeq) {
-//        vacationService.approveVacation(vacationApplicationSeq);
-//        return ResponseEntity.ok("휴가가 승인되었습니다.");
-//    }
+    // 모든 유저의 휴가 신청 내역 조회 (관리자 전용)
+    @GetMapping("/applications")
+    public ResponseEntity<List<VacationApplicationDTO>> getAllVacationApplications() {
+        List<VacationApplicationDTO> applications = vacationService.getAllVacationApplications();
+        return ResponseEntity.ok(applications);
+    }
+
+    
+    // 휴가 승인 처리
+    @PostMapping("/approve/{vacationApplicationSeq}")
+    public ResponseEntity<String> approveVacation(@PathVariable int vacationApplicationSeq) {
+    	
+    	// 세션에 저장된 유저코드(로그인 아이디)로 유저 seq찾아서 저장
+        String user_code = (String) session.getAttribute("loginID");
+        UsersDTO usersdto = usersServ.getMemberById(user_code);
+        int userSeq = usersdto.getUsers_seq();
+    	
+        vacationService.approveVacation(vacationApplicationSeq, userSeq);
+        return ResponseEntity.ok("휴가가 승인되었습니다.");
+    }
 
 //    // 특정 기간 동안의 휴가 조회
 //    @GetMapping("/byDateRange")
