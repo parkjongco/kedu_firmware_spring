@@ -14,7 +14,7 @@ public class BoardDTO {
 	private int board_view_count;
 	private int category_seq;
 	private int user_seq;
-	private String users_name;
+
 
 	public int getUser_seq() {
 		return user_seq;
@@ -81,14 +81,6 @@ public class BoardDTO {
 
 	public void setCategory_seq(int category_seq) {
 		this.category_seq = category_seq;
-	}
-
-	public String getUsers_name() {
-		return users_name;
-	}
-
-	public void setUsers_name(String user_name) {
-		this.users_name = user_name;
 	}
 
 }
