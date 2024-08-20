@@ -37,9 +37,6 @@ public class BoardController {
 
 
 
-
-
-
         if (loginID == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인되어 있지 않으면 Unauthorized 응답
         }
@@ -128,9 +125,23 @@ public class BoardController {
         // 변환된 userSeq를 DTO에 설정
         dto.setUser_seq(userSeq);
 
-        boardService.updateBySeq(dto);
-        return ResponseEntity.ok().build();
+        // 사용자 권한 확인
+        int userIsAdmin = userService.getUserIsAdmin(userSeq); // 사용자의 관리자 여부(1: 관리자, 0: 사용자) 확인
+        BoardDTO existingPost = boardService.getPostBySeq(seq); // 수정하려는 게시글 정보를 가져옴
+
+        if (existingPost == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 게시글이 없으면 Not Found 응답
+        }
+
+        // 관리자이거나, 본인이 작성한 글일 경우에만 수정 가능
+        if (userIsAdmin == 1 || existingPost.getUser_seq() == userSeq) {
+            boardService.updateBySeq(dto); // 게시글 수정
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한이 없으면 Forbidden 응답
+        }
     }
+
 
     // 게시글 조회수 증가
     @PutMapping("/viewCount")
