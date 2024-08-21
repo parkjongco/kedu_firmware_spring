@@ -2,7 +2,6 @@ package com.kedu.firmware.controllers;
 
 import com.kedu.firmware.DTO.BoardDTO;
 import com.kedu.firmware.DTO.Board_CategoryDTO;
-import com.kedu.firmware.DTO.UsersDTO;
 import com.kedu.firmware.services.BoardService;
 import com.kedu.firmware.services.Board_CategoryService;
 import com.kedu.firmware.services.UsersService;
@@ -27,21 +26,37 @@ public class BoardController {
 
     @Autowired
     private HttpSession session;
-
     @Autowired
     private UsersService usersService;
 
     // 게시글 작성
     @PostMapping
     public ResponseEntity<Void> post(@RequestBody BoardDTO dto) {
+        // 세션에서 loginID를 가져옴
         String loginID = (String) session.getAttribute("loginID");
 
+
         if (loginID == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인되지 않았으면 Unauthorized 응답
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인되어 있지 않으면 Unauthorized 응답
         }
 
-        UsersDTO usersDto = usersService.findUserByCode(loginID);
-        dto.setUser_seq(usersDto.getUsers_seq());
+        // loginID를 사용자 ID로 변환
+        // 예를 들어, loginID가 사용자 코드이고 이를 정수형 ID로 변환해야 한다면:\
+
+        //loginID가 어떻게 int로 바뀜 string인데, loginID가 user_code잖아
+        int userSeq;
+        try {
+            userSeq = Integer.parseInt(loginID); // 문자열을 정수형으로 변환
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 변환 실패 시 Unauthorized 응답
+        }
+
+        // 변환된 userSeq를 DTO에 설정
+        dto.setUser_seq(userSeq);
+
+        int user_Seq = usersService.findUserByCode(loginID).getUsers_seq();
+
+
         boardService.post(dto);
         return ResponseEntity.ok().build();
     }
@@ -74,55 +89,43 @@ public class BoardController {
     // 게시글 삭제
     @DeleteMapping("/{seq}")
     public ResponseEntity<Void> deleteBySeq(@PathVariable int seq) {
+        // 세션에서 loginID를 가져옴
         String loginID = (String) session.getAttribute("loginID");
         if (loginID == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인되지 않았으면 Unauthorized 응답
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인되어 있지 않으면 Unauthorized 응답
         }
 
-        UsersDTO usersDto = usersService.findUserByCode(loginID);
-        if (usersDto == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 사용자 정보가 없으면 Unauthorized 응답
-        }
+        // 게시글 삭제 작업을 위한 추가적인 권한 확인 로직이 필요할 수 있습니다.
 
-        BoardDTO boardDto = boardService.getBoard(seq);
-        if (boardDto == null) {
-            return ResponseEntity.notFound().build(); // 게시글이 없으면 Not Found 응답
-        }
-
-        if (usersDto.isAdmin() || usersDto.getUsers_seq() == boardDto.getUser_seq()) {
-            boardService.deleteBySeq(seq);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한이 없으면 Forbidden 응답
-        }
+        boardService.deleteBySeq(seq);
+        return ResponseEntity.ok().build();
     }
 
     // 게시글 업데이트
     @PutMapping("/{seq}")
     public ResponseEntity<Void> updateBySeq(@RequestBody BoardDTO dto, @PathVariable int seq) {
+        // 세션에서 loginID를 가져옴
         String loginID = (String) session.getAttribute("loginID");
         if (loginID == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인되지 않았으면 Unauthorized 응답
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그인되어 있지 않으면 Unauthorized 응답
         }
 
-        UsersDTO usersDto = usersService.findUserByCode(loginID);
-        if (usersDto == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 사용자 정보가 없으면 Unauthorized 응답
+        // seq 값을 dto에 설정
+        dto.setBoard_seq(seq);
+
+        // loginID를 사용자 ID로 변환
+        int userSeq;
+        try {
+            userSeq = Integer.parseInt(loginID); // 문자열을 정수형으로 변환
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 변환 실패 시 Unauthorized 응답
         }
 
-        BoardDTO boardDto = boardService.getBoard(seq);
-        if (boardDto == null) {
-            return ResponseEntity.notFound().build(); // 게시글이 없으면 Not Found 응답
-        }
+        // 변환된 userSeq를 DTO에 설정
+        dto.setUser_seq(userSeq);
 
-        if (usersDto.isAdmin() || usersDto.getUsers_seq() == boardDto.getUser_seq()) {
-            dto.setBoard_seq(seq);
-            dto.setUser_seq(usersDto.getUsers_seq()); // 권한 확인을 위해 사용자 시퀀스 설정
-            boardService.updateBySeq(dto);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한이 없으면 Forbidden 응답
-        }
+        boardService.updateBySeq(dto);
+        return ResponseEntity.ok().build();
     }
 
     // 게시글 조회수 증가
