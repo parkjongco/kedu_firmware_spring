@@ -5,8 +5,8 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="board">
     <insert id="insert">
-        INSERT INTO board (board_seq, board_title, board_contents, board_write_date, board_view_count, category_seq)
-        VALUES (board_seq.nextval, #{board_title}, #{board_contents}, SYSDATE, 0, #{category_seq})
+        INSERT INTO board (board_seq, board_title, board_contents, board_write_date, board_view_count, category_seq ,user_seq)
+        VALUES (board_seq.nextval, #{board_title}, #{board_contents}, SYSDATE, 0, #{category_seq} ,#{user_seq})
     </insert>
 
 

@@ -188,7 +188,9 @@ public class UsersService {
     public UsersDTO selectUserByEmail(String Email) {
     	return usersDAO.selectUserByEmail(Email);
     }
-
-
-
+    
+    public List<Map<String, Object>> getDepartmentMemberInfoWithProfile(String loginID, String departmentPrefix) {
+    	return usersDAO.findDepartmentInfoWithProfile(departmentPrefix, loginID);
+    }
+    
 }
