@@ -195,5 +195,8 @@ public class UsersService {
     	return usersDAO.selectUserByEmail(Email);
     }
     
+    public List<Map<String, Object>> getDepartmentMemberInfoWithProfile(String loginID, String departmentPrefix) {
+    	return usersDAO.findDepartmentInfoWithProfile(departmentPrefix, loginID);
+    }
     
 }
