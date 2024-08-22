@@ -20,8 +20,8 @@ public class Board_CategoryService {
         return board_CategoryDAO.getAllCategories();
     }
 
-    public List<BoardDTO> getPostsByCategory(int category_seq) {
-        return board_CategoryDAO.getPostsByCategory(category_seq);
+    public List<BoardDTO> getPostsByCategory(int category_seq, int user_seq ) {
+        return board_CategoryDAO.getPostsByCategory(category_seq, user_seq);
     }
 
     public Board_CategoryDTO getDefaultCategory() {

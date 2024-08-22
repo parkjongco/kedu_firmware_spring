@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 @RestController
 
-public class BoardDTO {
+public class BoardDTO extends BookmarkDTO {
 	private int board_seq;
 	private String board_title;
 	private String board_contents;
@@ -25,7 +25,7 @@ public class BoardDTO {
 	}
 
 	public BoardDTO() {}
-	public BoardDTO(int board_seq, String board_title, String board_contents, Timestamp board_write_date, int board_view_count, int category_seq,int user_seq) {
+	public BoardDTO(int board_seq, String board_title, String board_contents, Timestamp board_write_date, int board_view_count, int category_seq, int user_seq) {
 		this.board_seq = board_seq;
 		this.board_title = board_title;
 		this.board_contents = board_contents;

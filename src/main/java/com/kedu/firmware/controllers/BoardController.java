@@ -56,7 +56,16 @@ public class BoardController {
     // 특정 카테고리의 게시글 조회
     @GetMapping("/{seq}")
     public ResponseEntity<List<BoardDTO>> getPostByCategory(@PathVariable int seq) {
-        List<BoardDTO> boardDTOList = board_categoryService.getPostsByCategory(seq);
+
+        String loginID = (String) session.getAttribute("loginID");
+
+        UsersDTO usersDto = usersService.findUserByCode(loginID);
+        if (usersDto == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 사용자 정보가 없으면 Unauthorized 응답
+        }
+        int user_seq = usersDto.getUsers_seq();
+
+        List<BoardDTO> boardDTOList = board_categoryService.getPostsByCategory(seq, user_seq );
         return ResponseEntity.ok(boardDTOList);
     }
 
@@ -64,6 +73,9 @@ public class BoardController {
     @GetMapping("/detail/{seq}")
     public ResponseEntity<BoardDTO> getBySeq(@PathVariable int seq) {
         BoardDTO board = boardService.getBoard(seq);
+        long user_seq = board.getUser_seq();
+        String user_name = usersService.getUserNameBySeq(user_seq);
+        board.setUsers_name(user_name);
         if (board != null) {
             return ResponseEntity.ok(board);
         } else {
@@ -138,7 +150,7 @@ public class BoardController {
     public ResponseEntity<List<BoardDTO>> getDefaultPosts() {
         Board_CategoryDTO defaultCategory = board_categoryService.getDefaultCategory();
         if (defaultCategory != null) {
-            List<BoardDTO> defaultPosts = board_categoryService.getPostsByCategory(defaultCategory.getCategory_seq());
+            List<BoardDTO> defaultPosts = board_categoryService.getPostsByCategory(defaultCategory.getCategory_seq(), 999999999);
             return ResponseEntity.ok(defaultPosts);
         } else {
             return ResponseEntity.notFound().build();
