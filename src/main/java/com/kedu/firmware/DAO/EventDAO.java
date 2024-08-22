@@ -49,5 +49,11 @@ public class EventDAO {
             throw new RuntimeException("이벤트 삭제 중 오류 발생: " + e.getMessage(), e);
         }
     }
+    
+    // 모든 이벤트를 조회하는 DAO 메소드
+    public List<EventDTO> getAllEvents() {
+        return mybatis.selectList("Event.getAllEvents");
+    }
+    
 }
 

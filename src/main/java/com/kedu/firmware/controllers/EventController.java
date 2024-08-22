@@ -17,6 +17,11 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
+    @GetMapping
+    public List<EventDTO> getAllEvents() {
+        return eventService.getAllEvents();
+    }
+
     @GetMapping("/{id}")
     public EventDTO getEventById(@PathVariable Long id) {
         return eventService.getEventById(id);

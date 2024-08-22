@@ -76,4 +76,9 @@ public class EventService {
     public void deleteEvent(Long eventsSeq) {
         eventDAO.deleteEvent(eventsSeq);
     }
+    
+    // 모든 이벤트를 조회하는 서비스 메소드
+    public List<EventDTO> getAllEvents() {
+        return eventDAO.getAllEvents();
+    }
 }
