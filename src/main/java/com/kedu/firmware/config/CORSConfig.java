@@ -17,6 +17,8 @@ public class CORSConfig implements WebMvcConfigurer {
                 "http://192.168.1.172:3000",
                 "http://192.168.1.43:3000",        
                 "http://localhost:3000"
+                    ,"http://192.168.219.103:3000"
+
 
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")

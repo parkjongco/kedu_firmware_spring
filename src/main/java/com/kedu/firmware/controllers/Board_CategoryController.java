@@ -25,7 +25,7 @@ public class Board_CategoryController {
 
     @GetMapping("/{category_seq}")
     public void getPostsByCategory(@PathVariable int category_seq) {
-        List<BoardDTO>posts = board_categoryService.getPostsByCategory(category_seq);
+        List<BoardDTO>posts = board_categoryService.getPostsByCategory(category_seq, 999999999);
         for(BoardDTO category : posts){
             System.out.println(category.getBoard_title());
         }
