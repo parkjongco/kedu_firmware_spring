@@ -63,5 +63,10 @@
     <delete id="deleteEvent" parameterType="long">
         DELETE FROM Events WHERE events_seq = #{eventsSeq,jdbcType=BIGINT}
     </delete>
+    
+    <!-- 모든 이벤트를 조회하는 쿼리 -->
+    <select id="getAllEvents" resultMap="EventResultMap">
+        SELECT * FROM Events
+    </select>
 
 </mapper>
