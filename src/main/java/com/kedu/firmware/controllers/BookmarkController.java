@@ -55,6 +55,26 @@ public class BookmarkController {
         return ResponseEntity.ok().build();
     }
 
+    // 북마크를 넣는 엔드포인트
+    @PostMapping("/{board_seq}")
+    public ResponseEntity<Boolean> addBookmark(HttpServletRequest request, @PathVariable int board_seq) {
+        HttpSession session = request.getSession();
+        String loginID = (String) session.getAttribute("loginID");
+        if (loginID == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UsersDTO user = usersService.findUserByCode(loginID);
+        int user_seq = user.getUsers_seq();
+
+        BookmarkDTO bookmarkDTO = new BookmarkDTO();
+        bookmarkDTO.setBoard_seq(board_seq);
+        bookmarkDTO.setUser_seq(user_seq);
+
+        bookmarkService.addBookmark(bookmarkDTO);
+        return ResponseEntity.ok().build();
+    }
+
     // 북마크를 삭제하는 엔드포인트
     @DeleteMapping("/{board_seq}")
     public ResponseEntity<Void> deleteBookmark(HttpServletRequest request, @PathVariable int board_seq) {
