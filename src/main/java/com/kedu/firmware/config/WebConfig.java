@@ -19,12 +19,14 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(loggingInterceptor).addPathPatterns("/**");
     }
     
-  
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    	registry.addResourceHandler("/uploads/**")
-         .addResourceLocations("file:///absolute/path/to/upload/directory/");
-   }
-    
-
+        // 업로드된 파일을 서빙하기 위한 핸들러
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:///absolute/path/to/upload/directory/");
+        
+        // C:/images/ 디렉토리의 파일을 서빙하기 위한 핸들러
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:///C:/images/");
+    }
 }
